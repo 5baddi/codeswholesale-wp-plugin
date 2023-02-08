@@ -21,7 +21,6 @@ namespace CodesWholesaleBy5baddi;
  *
  * @link     http://baddi.info
  */
-
 class CodesWholesaleBy5baddi
 {
     /**
