@@ -10,7 +10,7 @@
  * @link     http://baddi.info
  */
 
-namespace CodesWholesaleBy5baddi\Core;
+namespace BaddiServices\CodesWholesale\Core;
 
 use InvalidArgumentException;
 

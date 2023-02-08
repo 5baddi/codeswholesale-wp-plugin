@@ -9,7 +9,18 @@ Version: 0.1
 Text Domain: codesWholesale_5baddi
 */
 
-use CodesWholesaleBy5baddi\CodesWholesaleBy5baddi;
+use RuntimeException;
+
+
+set_time_limit(300);
+
+if (! file_exists(__DIR__ . '/vendor/autoload.php')) {
+    throw new RuntimeException(
+        'Unable to load dependencies. please install dependencies!'
+    );
+}
+
+require_once(__DIR__ . '/vendor/autoload.php');
 
 define('CWS_5BADDI_PLUGIN_BASENAME', plugin_basename(__FILE__));
 define('CWS_5BADDI_PLUGIN_BASEPATH', plugin_dir_path(__FILE__));

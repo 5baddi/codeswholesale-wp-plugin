@@ -1,0 +1,5 @@
+{% if message is not empty %}
+<div class="{% if isSuccess == true %}updated{% else %}error{% endif %}">
+    <p>{{ function('stripslashes', message)|raw }}</p>
+</div>
+{% endif %}

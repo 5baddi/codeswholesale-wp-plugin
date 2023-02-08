@@ -1,0 +1,27 @@
+{
+    "name": "baddiservices/codesWholesale-wp-plugin",
+    "description": "WordPress integration with CodesWholesale API.",
+    "keywords": [
+        "baddi services",
+        "5baddi",
+        "wordpress",
+        "plugin",
+        "codesWholesale"
+    ],
+    "autoload": {
+        "psr-4": {
+            "BaddiServices\\CodesWholesale\\": "src/"
+        },
+        "files": [
+            "src/Helpers.php"
+        ]
+    },
+    "require": {
+        "timber/timber": "^1.22"
+    },
+    "config": {
+        "allow-plugins": {
+            "composer/installers": true
+        }
+    }
+}
