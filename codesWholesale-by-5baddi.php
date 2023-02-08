@@ -10,17 +10,19 @@ Text Domain: codesWholesale_5baddi
 */
 
 use RuntimeException;
-
+use BaddiServices\CodesWholesale\CodesWholesaleBy5baddi;
 
 set_time_limit(300);
 
-if (! file_exists(__DIR__ . '/vendor/autoload.php')) {
+$vendorPath = sprintf('%s/vendor/autoload.php', __DIR__);
+
+if (! file_exists($vendorPath)) {
     throw new RuntimeException(
         'Unable to load dependencies. please install dependencies!'
     );
 }
 
-require_once(__DIR__ . '/vendor/autoload.php');
+require_once($vendorPath);
 
 define('CWS_5BADDI_PLUGIN_BASENAME', plugin_basename(__FILE__));
 define('CWS_5BADDI_PLUGIN_BASEPATH', plugin_dir_path(__FILE__));
