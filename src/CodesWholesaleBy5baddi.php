@@ -28,6 +28,8 @@ class CodesWholesaleBy5baddi
 {
     use AdminMenu;
 
+    public const SLUG = 'codeswholesale-by-5baddi';
+
     /**
      * @var CodesWholesaleBy5baddi
      */
@@ -52,8 +54,17 @@ class CodesWholesaleBy5baddi
         // Prevent plugin activation if Oxygen builder not activated or not installed
         register_activation_hook(CWS_5BADDI_PLUGIN_BASENAME, [$this, 'checkWooCommerceIsInstalled']);
 
+        // Set twig view path
+        Timber::$locations = CWS_5BADDI_PLUGIN_BASEPATH . 'src/Views/';
+
         // Register hooks
         add_action('init', [$this, 'init'], 1);
+
+        // Register custom settings page
+        if (is_admin()) {
+            add_action('admin_menu', [$this, 'registerSettingsPage']);
+            add_action('admin_init', [$this, 'registerSettingsPageOptions']);
+        }
     }
 
     public function checkWooCommerceIsInstalled(): void
@@ -65,8 +76,7 @@ class CodesWholesaleBy5baddi
 
     public function init(): void
     {
-        // Set twig view path
-        Timber::$locations = CWS_5BADDI_PLUGIN_BASEPATH . 'src/Views/';
+        
     }
 
     public function pluginsLoaded(): void
