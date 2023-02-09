@@ -12,6 +12,7 @@
 
 namespace BaddiServices\CodesWholesale;
 
+use Timber\Timber;
 use BaddiServices\CodesWholesale\Traits\AdminMenu;
 
 /**
@@ -34,7 +35,7 @@ class CodesWholesaleBy5baddi
 
     public static function getInstance(): CodesWholesaleBy5baddi
     {
-        if (!self::$instance instanceof self) {
+        if (! self::$instance instanceof self) {
             self::$instance = new self();
         }
 
@@ -55,16 +56,21 @@ class CodesWholesaleBy5baddi
         add_action('init', [$this, 'init'], 1);
     }
 
-    private function checkWooCommerceIsInstalled(): void
+    public function checkWooCommerceIsInstalled(): void
     {
         if (! is_plugin_active('woocommerce/woocommerce.php')) {
             wp_die(cws5baddiTranslation('Make sure <a href="https://woocommerce.com/">WooCommerce plugin</a> is installed and activated!'));
         }
     }
 
-    private function init(): void
+    public function init(): void
     {
         // Set twig view path
         Timber::$locations = CWS_5BADDI_PLUGIN_BASEPATH . 'src/Views/';
+    }
+
+    public function pluginsLoaded(): void
+    {
+
     }
 }
