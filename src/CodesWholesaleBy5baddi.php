@@ -57,7 +57,7 @@ class CodesWholesaleBy5baddi
 
     private function checkWooCommerceIsInstalled(): void
     {
-        if (! is_plugin_active('oxygen/functions.php')) {
+        if (! is_plugin_active('woocommerce/woocommerce.php')) {
             wp_die(cws5baddiTranslation('Make sure <a href="https://woocommerce.com/">WooCommerce plugin</a> is installed and activated!'));
         }
     }
