@@ -46,6 +46,15 @@ trait AdminMenu
             'publish_posts',
             CodesWholesaleBy5baddi::SLUG
         );
+
+        add_submenu_page(
+            CodesWholesaleBy5baddi::SLUG,
+            cws5baddiTranslation('Account'),
+            cws5baddiTranslation('Account'),
+            'publish_posts',
+            sprintf('%s-account-details', CodesWholesaleBy5baddi::SLUG),
+            [$this, 'renderAccountPage']
+        );
     }
 
     public function registerSettingsPageOptions(): void
@@ -202,6 +211,20 @@ trait AdminMenu
                 'groupName'     => $this->getGroupName(),
                 'values'        => $this->settingsPageValues(),
                 'currencies'    => Constants::SUPPORTED_CURRENCIES,
+                'logo'          => sprintf('%simg/logo.svg', CWS_5BADDI_PLUGIN_ASSETS_URL),
+            ]
+        );
+    }
+
+    public function renderAccountPage(): void
+    {
+        Timber::render(
+            'admin/account.twig',
+            [
+                'groupName'     => $this->getGroupName(),
+                'values'        => $this->settingsPageValues(),
+                'currencies'    => Constants::SUPPORTED_CURRENCIES,
+                'logo'          => sprintf('%simg/logo.svg', CWS_5BADDI_PLUGIN_ASSETS_URL),
             ]
         );
     }

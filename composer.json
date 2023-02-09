@@ -17,7 +17,9 @@
         ]
     },
     "require": {
-        "timber/timber": "^1.22"
+        "php": ">=7.4",
+        "timber/timber": "^1.22",
+        "guzzlehttp/guzzle": "^7.5"
     },
     "config": {
         "allow-plugins": {
