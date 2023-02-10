@@ -1,9 +1,5 @@
-{% include 'admin/alert.twig' with { isSuccess, message } %}
-<img src="{{ logo }}" style="max-width: 25%"/>
-<hr/>
+{% include 'admin/partials/header.twig' with { isSuccess, message, title: 'CodesWholesale - General Settings' } %}
 <div class="wrap">
-	<div id="icon-themes" class="icon32"></div>
-	<h2>{{ function('cws5baddiTranslation', 'CodesWholesale - General Settings') }}</h2>
 	<form method="POST" action="options.php">
 		{{ function('settings_fields', groupName) }}
 		<table class="form-table" role="presentation">

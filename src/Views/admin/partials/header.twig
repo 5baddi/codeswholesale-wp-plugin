@@ -1,0 +1,8 @@
+<img src="{{ logo }}" style="max-width: 25%; padding: .5rem;"/>
+<hr/>
+<div class="wrap">
+    {% if title is defined %}
+	<h2>{{ function('cws5baddiTranslation', title) }}</h2>
+    {% endif %}
+</div>
+{% include 'admin/partials/alert.twig' with { isSuccess, message } %}
