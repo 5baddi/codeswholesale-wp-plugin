@@ -1,0 +1,4 @@
+<hr/>
+<div style="display: flex;flex-direction: row;align-items: center;">
+    <img src="{{ ('img/' ~ (isApiConnected == true ? 'connected' : 'offline') ~ '.svg')|assets }}" style="width: 32px; height: 32px;"/>&nbsp;{{ 'API'|translate }} {{ (isApiConnected == true ? 'connected' : 'offline')|translate }}
+</div>

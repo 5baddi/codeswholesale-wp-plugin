@@ -13,7 +13,7 @@
 namespace BaddiServices\CodesWholesale;
 
 use Timber\Timber;
-use BaddiServices\CodesWholesale\Traits\AdminMenu;
+use BaddiServices\CodesWholesale\Traits\AdminTrait;
 use BaddiServices\CodesWholesale\Traits\TimberTrait;
 use BaddiServices\CodesWholesale\Traits\CodesWholesaleTrait;
 
@@ -28,7 +28,7 @@ use BaddiServices\CodesWholesale\Traits\CodesWholesaleTrait;
  */
 class CodesWholesaleBy5baddi
 {
-    use AdminMenu, TimberTrait, CodesWholesaleTrait;
+    use AdminTrait, TimberTrait, CodesWholesaleTrait;
 
     public const SLUG = 'codeswholesale-by-5baddi';
 

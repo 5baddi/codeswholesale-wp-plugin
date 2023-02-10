@@ -17,7 +17,7 @@ use BaddiServices\CodesWholesale\Constants;
 use BaddiServices\CodesWholesale\CodesWholesaleBy5baddi;
 
 /**
- * Trait AdminMenu.
+ * Trait AdminTrait.
  *
  * @category PHP
  *
@@ -25,7 +25,7 @@ use BaddiServices\CodesWholesale\CodesWholesaleBy5baddi;
  *
  * @link     http://baddi.info
  */
-trait AdminMenu
+trait AdminTrait
 {
     public function registerSettingsPage(): void
     {
@@ -208,10 +208,11 @@ trait AdminMenu
         Timber::render(
             'admin/settings.twig',
             [
-                'groupName'     => $this->getGroupName(),
-                'values'        => $this->settingsPageValues(),
-                'currencies'    => Constants::SUPPORTED_CURRENCIES,
-                'logo'          => sprintf('%simg/logo.svg', CWS_5BADDI_PLUGIN_ASSETS_URL),
+                'groupName'         => $this->getGroupName(),
+                'values'            => $this->settingsPageValues(),
+                'currencies'        => Constants::SUPPORTED_CURRENCIES,
+                'logo'              => sprintf('%simg/logo.svg', CWS_5BADDI_PLUGIN_ASSETS_URL),
+                'isApiConnected'    => $this->isApiConnected(),
             ]
         );
     }
@@ -221,12 +222,18 @@ trait AdminMenu
         Timber::render(
             'admin/account.twig',
             [
-                'groupName'     => $this->getGroupName(),
-                'values'        => $this->settingsPageValues(),
-                'currencies'    => Constants::SUPPORTED_CURRENCIES,
-                'logo'          => sprintf('%simg/logo.svg', CWS_5BADDI_PLUGIN_ASSETS_URL),
+                'groupName'         => $this->getGroupName(),
+                'values'            => $this->settingsPageValues(),
+                'currencies'        => Constants::SUPPORTED_CURRENCIES,
+                'logo'              => sprintf('%simg/logo.svg', CWS_5BADDI_PLUGIN_ASSETS_URL),
+                'isApiConnected'    => $this->isApiConnected(),
             ]
         );
+    }
+
+    private function isApiConnected(): bool
+    {
+        return ! empty(get_option(Constants::BEARER_TOKEN_OPTION, ''));
     }
 
     private function settingsPageValues(): array

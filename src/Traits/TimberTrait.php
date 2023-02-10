@@ -35,6 +35,10 @@ trait TimberTrait
             return cws5baddiTranslation($text);
         }));
 
+        $twig->addFilter(new Twig_Filter('assets', function ($file) {
+            return sprintf('%s%s', CWS_5BADDI_PLUGIN_ASSETS_URL, $file);
+        }));
+
         return $twig;
     }
 }
