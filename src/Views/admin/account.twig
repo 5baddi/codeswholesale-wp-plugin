@@ -1,1 +1,45 @@
 {% include 'admin/partials/header.twig' with { isSuccess, message, title: 'CodesWholesale - Account Details' } %}
+<div class="wrap">
+	<form method="POST" action="options.php">
+		{{ function('settings_fields', groupName) }}
+		<table class="form-table" role="presentation">
+			<tbody>
+				<tr>
+					<th scope="row">
+						<label for="cws5baddi_api_client_id">{{ 'API client ID'|translate }}</label>
+					</th>
+					<td>
+						<input style="min-width: 40%;" type="text" value="{{ values.cws5baddi_api_client_id }}" id="cws5baddi_api_client_id" name="cws5baddi_api_client_id" aria-describedby="cws5baddi_api_client_id_description"/>
+						<p class="description" id="cws5baddi_api_client_id_description">
+							{{ 'Generate client ID under API tab on CodesWholesale.'|translate }}
+						</p>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">
+						<label for="cws5baddi_api_client_secret">{{ 'API client secret'|translate }}</label>
+					</th>
+					<td>
+						<input style="min-width: 40%;" type="text" value="{{ values.cws5baddi_api_client_secret }}" id="cws5baddi_api_client_secret" name="cws5baddi_api_client_secret" aria-describedby="cws5baddi_api_client_secret_description"/>
+						<p class="description" id="cws5baddi_api_client_secret_description">
+							{{ 'Generate client secret under API tab on CodesWholesale.'|translate }}
+						</p>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">
+						<label for="cws5baddi_api_client_signature">{{ 'API client signature'|translate }}</label>
+					</th>
+					<td>
+						<input style="min-width: 40%;" type="text" value="{{ values.cws5baddi_api_client_signature }}" id="cws5baddi_api_client_signature" name="cws5baddi_api_client_signature" aria-describedby="cws5baddi_api_client_signature_description"/>
+						<p class="description" id="cws5baddi_api_client_signature_description">
+							{{ 'Get client signature under API tab on CodesWholesale.'|translate }}
+						</p>
+					</td>
+				</tr>
+            </tbody>
+        </table>
+
+		{{ function('submit_button') }}
+    </form>
+</div>

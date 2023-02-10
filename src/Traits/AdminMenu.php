@@ -15,8 +15,6 @@ namespace BaddiServices\CodesWholesale\Traits;
 use Timber\Timber;
 use BaddiServices\CodesWholesale\Constants;
 use BaddiServices\CodesWholesale\CodesWholesaleBy5baddi;
-use BaddiServices\CodesWholesale\Core\Container;
-use BaddiServices\CodesWholesale\Services\Domains\CodesWholesaleService;
 
 /**
  * Trait AdminMenu.
@@ -35,27 +33,27 @@ trait AdminMenu
             cws5baddiTranslation('CodesWholesale'),
             cws5baddiTranslation('CodesWholesale'),
             'publish_posts',
-            CodesWholesaleBy5baddi::SLUG,
-            [$this, 'renderSettingsPage'],
+            sprintf('%s-account-details', CodesWholesaleBy5baddi::SLUG),
+            [$this, 'renderAccountPage'],
             sprintf('%simg/favicon.png', CWS_5BADDI_PLUGIN_ASSETS_URL),
             25
         );
 
         add_submenu_page(
-            CodesWholesaleBy5baddi::SLUG,
-            cws5baddiTranslation('Settings'),
-            cws5baddiTranslation('Settings'),
+            sprintf('%s-account-details', CodesWholesaleBy5baddi::SLUG),
+            cws5baddiTranslation('Account details'),
+            cws5baddiTranslation('Account details'),
             'publish_posts',
-            CodesWholesaleBy5baddi::SLUG
+            sprintf('%s-account-details', CodesWholesaleBy5baddi::SLUG)
         );
 
         add_submenu_page(
-            CodesWholesaleBy5baddi::SLUG,
-            cws5baddiTranslation('Account'),
-            cws5baddiTranslation('Account'),
-            'publish_posts',
             sprintf('%s-account-details', CodesWholesaleBy5baddi::SLUG),
-            [$this, 'renderAccountPage']
+            cws5baddiTranslation('General settings'),
+            cws5baddiTranslation('General settings'),
+            'publish_posts',
+            CodesWholesaleBy5baddi::SLUG,
+            [$this, 'renderSettingsPage']
         );
     }
 
