@@ -48,6 +48,11 @@ trait CodesWholesaleTrait
                 update_option(Constants::BEARER_TOKEN_OPTION, $token['access_token']);
                 update_option(Constants::BEARER_TOKEN_EXPIRES_IN_OPTION, $token['expires_in'] ?? 0);
             }
+
+            if (empty($token) || empty($token['access_token'])) {
+                update_option(Constants::BEARER_TOKEN_OPTION, '');
+                update_option(Constants::BEARER_TOKEN_EXPIRES_IN_OPTION, 0);
+            }
         }
     }
 }
