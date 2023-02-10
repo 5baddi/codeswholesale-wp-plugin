@@ -1,6 +1,6 @@
 {% include 'admin/partials/header.twig' with { isSuccess, message, title: 'Import Products' } %}
+{% if isImporting != true %}
 <div class="wrap">
-    {% if isImporting != true %}
     <form method="POST" action="{{ urls.importProducts }}">
         {{ function('wp_nonce_field', groupName) }}
         <table class="form-table" role="presentation">
@@ -71,10 +71,13 @@
             <input {% if isApiConnected != true %}disabled{% endif %} type="submit" name="submit" id="submit" class="button button-primary" value="{{ 'Import products'|translate }}">
         </p>
     </form>
-    {% else %}
-    <p id="importing-products-output"></p>
-    {% endif %}
 </div>
+{% else %}
+<div class="wrap" style="background: white; text-align: center;">
+    <img src="{{ 'img/loader.gif'|assets }}" style="width: 35%; object-fit: none;"/>
+    <p id="importing-products-output"></p>
+</div>
+{% endif %}
 {% include 'admin/partials/footer.twig' with { isApiConnected } %}
 
 {% if isImporting == true %}
