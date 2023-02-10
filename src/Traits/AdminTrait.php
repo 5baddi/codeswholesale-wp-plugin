@@ -34,7 +34,7 @@ trait AdminTrait
             cws5baddiTranslation('CodesWholesale'),
             'publish_posts',
             sprintf('%s-account-details', CodesWholesaleBy5baddi::SLUG),
-            [$this, 'renderAccountPage'],
+            [$this, 'renderAccountDetailsPage'],
             sprintf('%simg/favicon.png', CWS_5BADDI_PLUGIN_ASSETS_URL),
             25
         );
@@ -53,7 +53,7 @@ trait AdminTrait
             cws5baddiTranslation('General settings'),
             'publish_posts',
             CodesWholesaleBy5baddi::SLUG,
-            [$this, 'renderSettingsPage']
+            [$this, 'renderGeneralSettingsPage']
         );
 
         add_submenu_page(
@@ -86,36 +86,50 @@ trait AdminTrait
         );
     }
 
-    public function renderSettingsPage(): void
+    public function renderAccountDetailsPage(): void
     {
+        $data = [];
+
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && check_admin_referer($this->getGroupName())) {
-            $this->saveGeneralSettings();
+            $this->saveAccountDetails();
+
+            $token = get_option(Constants::BEARER_TOKEN_OPTION, '');
+            $expiresIn = get_option(Constants::BEARER_TOKEN_EXPIRES_IN_OPTION, 0);
+
+            $now = time();
+            $expiresIn = $now + $expiresIn;
+
+            if (empty($token) || $expiresIn <= $now) {
+                $data['message'] = cws5baddiTranslation('API connection failed! please check your API credentials...');
+                $data['isSuccess'] = false;
+            } else {
+                $data['message'] = cws5baddiTranslation('Account details saved successfully.');
+                $data['isSuccess'] = true;
+            }
         }
 
-        $this->render(
-            'admin/settings.twig',
-            []
-        );
+        $this->render('admin/account.twig', $data);
+    }
+
+    public function renderGeneralSettingsPage(): void
+    {
+        $data = [];
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && check_admin_referer($this->getGroupName())) {
+            $this->saveGeneralSettings();
+
+            $data['message'] = cws5baddiTranslation('General settings saved successfully.');
+            $data['isSuccess'] = true;
+        }
+
+        $this->render('admin/settings.twig', $data);
     }
 
     public function renderImportProductsPage(): void
     {
-        $this->render(
-            'admin/import-products.twig',
-            []
-        );
-    }
+        $data = [];
 
-    public function renderAccountPage(): void
-    {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST' && check_admin_referer($this->getGroupName())) {
-            $this->saveAccountDetails();
-        }
-
-        $this->render(
-            'admin/account.twig',
-            []
-        );
+        $this->render('admin/import-products.twig', $data);
     }
 
     public function render(string $view, array $data = []): void
