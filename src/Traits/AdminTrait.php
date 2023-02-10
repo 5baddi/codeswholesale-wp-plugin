@@ -55,6 +55,15 @@ trait AdminTrait
             CodesWholesaleBy5baddi::SLUG,
             [$this, 'renderSettingsPage']
         );
+
+        add_submenu_page(
+            sprintf('%s-account-details', CodesWholesaleBy5baddi::SLUG),
+            cws5baddiTranslation('Import products'),
+            cws5baddiTranslation('Import products'),
+            'publish_posts',
+            sprintf('%s-import-products', CodesWholesaleBy5baddi::SLUG),
+            [$this, 'renderImportProductsPage']
+        );
     }
 
     public function registerSettingsPageOptions(): void
@@ -208,11 +217,25 @@ trait AdminTrait
         Timber::render(
             'admin/settings.twig',
             [
-                'groupName'         => $this->getGroupName(),
-                'values'            => $this->settingsPageValues(),
-                'currencies'        => Constants::SUPPORTED_CURRENCIES,
-                'logo'              => sprintf('%simg/logo.svg', CWS_5BADDI_PLUGIN_ASSETS_URL),
-                'isApiConnected'    => $this->isApiConnected(),
+                'groupName'           => $this->getGroupName(),
+                'values'              => $this->settingsValues(),
+                'currencies'          => Constants::CURRENCIES_LIST,
+                'logo'                => sprintf('%simg/logo.svg', CWS_5BADDI_PLUGIN_ASSETS_URL),
+                'isApiConnected'      => $this->isApiConnected(),
+            ]
+        );
+    }
+
+    public function renderImportProductsPage(): void
+    {
+        Timber::render(
+            'admin/import-products.twig',
+            [
+                'groupName'           => $this->getGroupName(),
+                'values'              => $this->settingsValues(),
+                'currencies'          => Constants::CURRENCIES_LIST,
+                'logo'                => sprintf('%simg/logo.svg', CWS_5BADDI_PLUGIN_ASSETS_URL),
+                'isApiConnected'      => $this->isApiConnected(),
             ]
         );
     }
@@ -222,11 +245,11 @@ trait AdminTrait
         Timber::render(
             'admin/account.twig',
             [
-                'groupName'         => $this->getGroupName(),
-                'values'            => $this->settingsPageValues(),
-                'currencies'        => Constants::SUPPORTED_CURRENCIES,
-                'logo'              => sprintf('%simg/logo.svg', CWS_5BADDI_PLUGIN_ASSETS_URL),
-                'isApiConnected'    => $this->isApiConnected(),
+                'groupName'           => $this->getGroupName(),
+                'values'              => $this->settingsValues(),
+                'currencies'          => Constants::CURRENCIES_LIST,
+                'logo'                => sprintf('%simg/logo.svg', CWS_5BADDI_PLUGIN_ASSETS_URL),
+                'isApiConnected'      => $this->isApiConnected(),
             ]
         );
     }
@@ -236,7 +259,7 @@ trait AdminTrait
         return ! empty(get_option(Constants::BEARER_TOKEN_OPTION, ''));
     }
 
-    private function settingsPageValues(): array
+    private function settingsValues(): array
     {
         return [
             Constants::API_CLIENT_ID_OPTION
@@ -273,6 +296,8 @@ trait AdminTrait
             => get_option(Constants::BEARER_TOKEN_OPTION, ''),
             Constants::BEARER_TOKEN_EXPIRES_IN_OPTION
             => get_option(Constants::BEARER_TOKEN_EXPIRES_IN_OPTION, 0),
+            Constants::SUPPORTED_PRODUCT_DESCRIPTION_LANGUAGES_OPTION
+            => json_decode(get_option(Constants::SUPPORTED_PRODUCT_DESCRIPTION_LANGUAGES_OPTION, '[]'), true),
         ];
     }
 

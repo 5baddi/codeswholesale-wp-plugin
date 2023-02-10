@@ -33,6 +33,8 @@ class CodesWholesaleService
 
     public const TOKEN_ENDPOINT = '/oauth/token';
     public const ACCOUNT_DETAILS_ENDPOINT = '/v2/accounts/current';
+    public const PRODUCTS_ENDPOINT = '/v2/products';
+    public const LANGUAGES_ENDPOINT = '/v2/languages';
 
     /**
      * @var GuzzleHttp\Client
@@ -75,6 +77,28 @@ class CodesWholesaleService
     {
         try {
             $response = $this->client->get(self::ACCOUNT_DETAILS_ENDPOINT);
+
+            if ($response->getStatusCode() !== 200) {
+                return [];
+            }
+
+            return $this->fromJson($response);
+        } catch (Throwable $e) {
+            return [];
+        }
+    }
+
+    public function getSupportedProductDescriptionLanguages(string $token): array
+    {
+        try {
+            $response = $this->client->get(
+                self::LANGUAGES_ENDPOINT,
+                [
+                    'headers' => [
+                        'Authorization' => sprintf('Bearer %s', $token)
+                    ]
+                ]
+            );
 
             if ($response->getStatusCode() !== 200) {
                 return [];

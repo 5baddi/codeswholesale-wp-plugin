@@ -89,5 +89,6 @@ class CodesWholesaleBy5baddi
     public function pluginsLoaded(): void
     {
         $this->authenticate();
+        $this->fetchSupportedProductDescriptionLanguages();
     }
 }
