@@ -42,6 +42,10 @@ class Constants
     public const BEARER_TOKEN_OPTION = 'cws5baddi_bearer_token';
     public const BEARER_TOKEN_EXPIRES_IN_OPTION = 'cws5baddi_bearer_token_expires_in';
     public const SUPPORTED_PRODUCT_DESCRIPTION_LANGUAGES_OPTION = 'cws5baddi_supported_product_description_languages';
+    public const SUPPORTED_REGIONS_OPTION = 'cws5baddi_supported_regions';
+    public const SUPPORTED_TERRITORIES_OPTION = 'cws5baddi_supported_territories';
+    public const SUPPORTED_PLATFORMS_OPTION = 'cws5baddi_supported_platforms';
+    public const ACCOUNT_DETAILS_OPTION = 'cws5baddi_account_details';
 
     public const PROFIT_MARGIN_AMOUNT = 1;
     public const PROFIT_MARGIN_PERCENTAGE = 2;

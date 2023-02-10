@@ -90,5 +90,8 @@ class CodesWholesaleBy5baddi
     {
         $this->authenticate();
         $this->fetchSupportedProductDescriptionLanguages();
+        $this->fetchSupportedRegions();
+        $this->fetchSupportedTerritories();
+        $this->fetchSupportedPlatforms();
     }
 }

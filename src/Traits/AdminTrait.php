@@ -68,132 +68,6 @@ trait AdminTrait
 
     public function registerSettingsPageOptions(): void
     {
-        register_setting(
-            $this->getGroupName(),
-            Constants::API_CLIENT_ID_OPTION,
-            [
-                'type'              => 'string',
-                'sanitize_callback' => 'sanitize_text_field'
-            ]
-        );
-
-        register_setting(
-            $this->getGroupName(),
-            Constants::API_CLIENT_SECRET_OPTION,
-            [
-                'type'              => 'string',
-                'sanitize_callback' => 'sanitize_text_field'
-            ]
-        );
-
-        register_setting(
-            $this->getGroupName(),
-            Constants::API_CLIENT_SIGNATURE_OPTION,
-            [
-                'type'              => 'string',
-                'sanitize_callback' => 'sanitize_text_field'
-            ]
-        );
-
-        register_setting(
-            $this->getGroupName(),
-            Constants::PROFIT_MARGIN_TYPE_OPTION,
-            [
-                'type'              => 'integer',
-                'sanitize_callback' => 'intval'
-            ]
-        );
-
-        register_setting(
-            $this->getGroupName(),
-            Constants::CURRENCY_OPTION,
-            [
-                'type'              => 'string',
-                'sanitize_callback' => 'sanitize_text_field'
-            ]
-        );
-
-        register_setting(
-            $this->getGroupName(),
-            Constants::AUTO_COMPLETE_ORDERS_OPTION,
-            [
-                'type'              => 'integer',
-                'sanitize_callback' => 'intval'
-            ]
-        );
-
-        register_setting(
-            $this->getGroupName(),
-            Constants::PRE_ORDER_PRODUCTS_OPTION,
-            [
-                'type'              => 'integer',
-                'sanitize_callback' => 'intval'
-            ]
-        );
-
-        register_setting(
-            $this->getGroupName(),
-            Constants::AUTOMATIC_PRODUCT_IMPORT_OPTION,
-            [
-                'type'              => 'integer',
-                'sanitize_callback' => 'intval'
-            ]
-        );
-
-        register_setting(
-            $this->getGroupName(),
-            Constants::LOW_BALANCE_NOTIFICATION_OPTION,
-            [
-                'type'              => 'integer',
-                'sanitize_callback' => 'intval'
-            ]
-        );
-
-        register_setting(
-            $this->getGroupName(),
-            Constants::RISK_SCORE_VALUE_OPTION,
-            [
-                'type'              => 'integer',
-                'sanitize_callback' => 'intval'
-            ]
-        );
-
-        register_setting(
-            $this->getGroupName(),
-            Constants::DOUBLE_CHECK_PRICE_OPTION,
-            [
-                'type'              => 'integer',
-                'sanitize_callback' => 'intval'
-            ]
-        );
-
-        register_setting(
-            $this->getGroupName(),
-            Constants::HIDE_PRODUCTS_OPTION,
-            [
-                'type'              => 'integer',
-                'sanitize_callback' => 'intval'
-            ]
-        );
-
-        register_setting(
-            $this->getGroupName(),
-            Constants::PRODUCT_DESCRIPTION_LANGUAGE_OPTION,
-            [
-                'type'              => 'string',
-                'sanitize_callback' => 'sanitize_text_field'
-            ]
-        );
-
-        register_setting(
-            $this->getGroupName(),
-            Constants::CHARM_PRICING_OPTION,
-            [
-                'type'              => 'integer',
-                'sanitize_callback' => 'intval'
-            ]
-        );
-
         // Add settings link to plugin menu
         add_filter(
             'plugin_action_links_codeswholesale-by-5baddi/codeswholesale-by-5baddi.php',
@@ -214,44 +88,53 @@ trait AdminTrait
 
     public function renderSettingsPage(): void
     {
-        Timber::render(
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && check_admin_referer($this->getGroupName())) {
+            $this->saveGeneralSettings();
+        }
+
+        $this->render(
             'admin/settings.twig',
-            [
-                'groupName'           => $this->getGroupName(),
-                'values'              => $this->settingsValues(),
-                'currencies'          => Constants::CURRENCIES_LIST,
-                'logo'                => sprintf('%simg/logo.svg', CWS_5BADDI_PLUGIN_ASSETS_URL),
-                'isApiConnected'      => $this->isApiConnected(),
-            ]
+            []
         );
     }
 
     public function renderImportProductsPage(): void
     {
-        Timber::render(
+        $this->render(
             'admin/import-products.twig',
-            [
-                'groupName'           => $this->getGroupName(),
-                'values'              => $this->settingsValues(),
-                'currencies'          => Constants::CURRENCIES_LIST,
-                'logo'                => sprintf('%simg/logo.svg', CWS_5BADDI_PLUGIN_ASSETS_URL),
-                'isApiConnected'      => $this->isApiConnected(),
-            ]
+            []
         );
     }
 
     public function renderAccountPage(): void
     {
-        Timber::render(
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && check_admin_referer($this->getGroupName())) {
+            $this->saveAccountDetails();
+        }
+
+        $this->render(
             'admin/account.twig',
-            [
-                'groupName'           => $this->getGroupName(),
-                'values'              => $this->settingsValues(),
-                'currencies'          => Constants::CURRENCIES_LIST,
-                'logo'                => sprintf('%simg/logo.svg', CWS_5BADDI_PLUGIN_ASSETS_URL),
-                'isApiConnected'      => $this->isApiConnected(),
-            ]
+            []
         );
+    }
+
+    public function render(string $view, array $data = []): void
+    {
+        $sharedData = [
+            'groupName'           => $this->getGroupName(),
+            'values'              => $this->settingsValues(),
+            'currencies'          => Constants::CURRENCIES_LIST,
+            'languages'           => Constants::LANGUAGES_LIST,
+            'logo'                => sprintf('%simg/logo.svg', CWS_5BADDI_PLUGIN_ASSETS_URL),
+            'isApiConnected'      => $this->isApiConnected(),
+            'urls'                => [
+                'accountSettings' => admin_url(sprintf('admin.php?page=%s-account-details', CodesWholesaleBy5baddi::SLUG)),
+                'generalSettings' => admin_url(sprintf('admin.php?page=%s', CodesWholesaleBy5baddi::SLUG)),
+                'importProducts'  => admin_url(sprintf('admin.php?page=%s-import-products', CodesWholesaleBy5baddi::SLUG)),
+            ]
+        ];
+
+        Timber::render($view, array_merge($sharedData, $data));
     }
 
     private function isApiConnected(): bool
@@ -298,11 +181,97 @@ trait AdminTrait
             => get_option(Constants::BEARER_TOKEN_EXPIRES_IN_OPTION, 0),
             Constants::SUPPORTED_PRODUCT_DESCRIPTION_LANGUAGES_OPTION
             => json_decode(get_option(Constants::SUPPORTED_PRODUCT_DESCRIPTION_LANGUAGES_OPTION, '[]'), true),
+            Constants::SUPPORTED_REGIONS_OPTION
+            => json_decode(get_option(Constants::SUPPORTED_REGIONS_OPTION, '[]'), true),
+            Constants::SUPPORTED_TERRITORIES_OPTION
+            => json_decode(get_option(Constants::SUPPORTED_TERRITORIES_OPTION, '[]'), true),
+            Constants::SUPPORTED_PLATFORMS_OPTION
+            => json_decode(get_option(Constants::SUPPORTED_PLATFORMS_OPTION, '[]'), true),
+            Constants::ACCOUNT_DETAILS_OPTION
+            => json_decode(get_option(Constants::ACCOUNT_DETAILS_OPTION, '[]'), true),
         ];
     }
 
     private function getGroupName(): string
     {
         return sprintf('%s_options', CodesWholesaleBy5baddi::SLUG);
+    }
+
+    private function saveAccountDetails(): void
+    {
+        update_option(
+            Constants::API_CLIENT_ID_OPTION,
+            sanitize_text_field($_POST[Constants::API_CLIENT_ID_OPTION] ?? '')
+        );
+
+        update_option(
+            Constants::API_CLIENT_SECRET_OPTION,
+            sanitize_text_field($_POST[Constants::API_CLIENT_SECRET_OPTION] ?? '')
+        );
+
+        update_option(
+            Constants::API_CLIENT_SIGNATURE_OPTION,
+            sanitize_text_field($_POST[Constants::API_CLIENT_SIGNATURE_OPTION] ?? '')
+        );
+
+        $this->createToken();
+    }
+
+    private function saveGeneralSettings(): void
+    {
+        update_option(
+            Constants::PROFIT_MARGIN_TYPE_OPTION,
+            intval($_POST[Constants::PROFIT_MARGIN_TYPE_OPTION] ?? Constants::DEFAULT_PROFIT_MARGIN_TYPE)
+        );
+
+        update_option(
+            Constants::CURRENCY_OPTION,
+            sanitize_text_field($_POST[Constants::CURRENCY_OPTION] ?? Constants::DEFAULT_CURRENCY)
+        );
+
+        update_option(
+            Constants::AUTO_COMPLETE_ORDERS_OPTION,
+            intval($_POST[Constants::AUTO_COMPLETE_ORDERS_OPTION] ?? 1)
+        );
+
+        update_option(
+            Constants::PRE_ORDER_PRODUCTS_OPTION,
+            intval($_POST[Constants::PRE_ORDER_PRODUCTS_OPTION] ?? 1)
+        );
+
+        update_option(
+            Constants::AUTOMATIC_PRODUCT_IMPORT_OPTION,
+            intval($_POST[Constants::AUTOMATIC_PRODUCT_IMPORT_OPTION] ?? 0)
+        );
+
+        update_option(
+            Constants::LOW_BALANCE_NOTIFICATION_OPTION,
+            intval($_POST[Constants::LOW_BALANCE_NOTIFICATION_OPTION] ?? Constants::DEFAULT_LOW_BALANCE_NOTIFICATION_VALUE)
+        );
+
+        update_option(
+            Constants::RISK_SCORE_VALUE_OPTION,
+            intval($_POST[Constants::RISK_SCORE_VALUE_OPTION] ?? Constants::DEFAULT_RISK_SCORE_VALUE)
+        );
+
+        update_option(
+            Constants::DOUBLE_CHECK_PRICE_OPTION,
+            intval($_POST[Constants::DOUBLE_CHECK_PRICE_OPTION] ?? 1)
+        );
+
+        update_option(
+            Constants::HIDE_PRODUCTS_OPTION,
+            intval($_POST[Constants::HIDE_PRODUCTS_OPTION] ?? 1)
+        );
+
+        update_option(
+            Constants::PRODUCT_DESCRIPTION_LANGUAGE_OPTION,
+            sanitize_text_field($_POST[Constants::PRODUCT_DESCRIPTION_LANGUAGE_OPTION] ?? Constants::DEFAULT_PRODUCT_DESCRIPTION_LANGUAGE)
+        );
+
+        update_option(
+            Constants::CHARM_PRICING_OPTION,
+            intval($_POST[Constants::CHARM_PRICING_OPTION] ?? 0)
+        );
     }
 }

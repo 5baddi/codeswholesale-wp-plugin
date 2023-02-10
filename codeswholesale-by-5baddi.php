@@ -9,7 +9,6 @@ Version: 0.1
 Text Domain: codesWholesale_5baddi
 */
 
-use RuntimeException;
 use BaddiServices\CodesWholesale\CodesWholesaleBy5baddi;
 
 set_time_limit(300);
@@ -17,7 +16,7 @@ set_time_limit(300);
 $vendorPath = sprintf('%s/vendor/autoload.php', __DIR__);
 
 if (! file_exists($vendorPath)) {
-    throw new RuntimeException(
+    throw new \RuntimeException(
         'Unable to load dependencies. please install dependencies!'
     );
 }

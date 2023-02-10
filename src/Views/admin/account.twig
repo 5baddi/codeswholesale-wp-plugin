@@ -1,7 +1,7 @@
-{% include 'admin/partials/header.twig' with { isSuccess, message, title: 'CodesWholesale - Account Details' } %}
+{% include 'admin/partials/header.twig' with { isSuccess, message, title: 'Account Details' } %}
 <div class="wrap">
-	<form method="POST" action="options.php">
-		{{ function('settings_fields', groupName) }}
+	<form method="POST" action="{{ urls.accountSettings }}">
+		{{ function('wp_nonce_field', groupName) }}
 		<table class="form-table" role="presentation">
 			<tbody>
 				<tr>

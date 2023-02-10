@@ -72,7 +72,91 @@ trait CodesWholesaleTrait
         }
     }
 
-    private function createToken(): void
+    public function fetchSupportedRegions(): void
+    {
+        $values = $this->settingsValues();
+        $now = time();
+        $expiresIn = $now + ($values[Constants::BEARER_TOKEN_EXPIRES_IN_OPTION] ?? 0);
+
+        if (
+            empty($values[Constants::SUPPORTED_REGIONS_OPTION])
+            && ! empty($values[Constants::BEARER_TOKEN_OPTION])
+            && $expiresIn > $now
+        ) {
+            /** @var CodesWholesaleService */
+            $codesWholesaleService = Container::get(CodesWholesaleService::class);
+
+            $regions = $codesWholesaleService->getSupportedRegions($values[Constants::BEARER_TOKEN_OPTION]);
+            if (empty($regions)) {
+                $this->createToken();
+
+                $regions = $codesWholesaleService->getSupportedRegions($values[Constants::BEARER_TOKEN_OPTION]);
+            }
+
+            update_option(
+                Constants::SUPPORTED_REGIONS_OPTION,
+                json_encode(array_column($regions['regions'] ?? [], 'name'))
+            );
+        }
+    }
+
+    public function fetchSupportedTerritories(): void
+    {
+        $values = $this->settingsValues();
+        $now = time();
+        $expiresIn = $now + ($values[Constants::BEARER_TOKEN_EXPIRES_IN_OPTION] ?? 0);
+
+        if (
+            empty($values[Constants::SUPPORTED_TERRITORIES_OPTION])
+            && ! empty($values[Constants::BEARER_TOKEN_OPTION])
+            && $expiresIn > $now
+        ) {
+            /** @var CodesWholesaleService */
+            $codesWholesaleService = Container::get(CodesWholesaleService::class);
+
+            $territories = $codesWholesaleService->getSupportedTerritories($values[Constants::BEARER_TOKEN_OPTION]);
+            if (empty($territories)) {
+                $this->createToken();
+
+                $territories = $codesWholesaleService->getSupportedTerritories($values[Constants::BEARER_TOKEN_OPTION]);
+            }
+
+            update_option(
+                Constants::SUPPORTED_TERRITORIES_OPTION,
+                json_encode(array_column($territories['territories'] ?? [], 'territory'))
+            );
+        }
+    }
+
+    public function fetchSupportedPlatforms(): void
+    {
+        $values = $this->settingsValues();
+        $now = time();
+        $expiresIn = $now + ($values[Constants::BEARER_TOKEN_EXPIRES_IN_OPTION] ?? 0);
+
+        if (
+            empty($values[Constants::SUPPORTED_PLATFORMS_OPTION])
+            && ! empty($values[Constants::BEARER_TOKEN_OPTION])
+            && $expiresIn > $now
+        ) {
+            /** @var CodesWholesaleService */
+            $codesWholesaleService = Container::get(CodesWholesaleService::class);
+
+            $platforms = $codesWholesaleService->getSupportedPlatforms($values[Constants::BEARER_TOKEN_OPTION]);
+            if (empty($platforms)) {
+                $this->createToken();
+
+                $platforms = $codesWholesaleService->getSupportedPlatforms($values[Constants::BEARER_TOKEN_OPTION]);
+            }
+
+            update_option(
+                Constants::SUPPORTED_PLATFORMS_OPTION,
+                json_encode(array_column($platforms['platforms'] ?? [], 'name'))
+            );
+        }
+    }
+
+    private function createToken()
     {
         $values = $this->settingsValues();
 
@@ -80,6 +164,9 @@ trait CodesWholesaleTrait
             empty($values[Constants::API_CLIENT_ID_OPTION])
             || empty($values[Constants::API_CLIENT_SECRET_OPTION])
         ) {
+            update_option(Constants::BEARER_TOKEN_OPTION, '');
+            update_option(Constants::BEARER_TOKEN_EXPIRES_IN_OPTION, 0);
+
             return;
         }
 
@@ -90,6 +177,13 @@ trait CodesWholesaleTrait
         if (! empty($token) && Arr::has($token, 'access_token')) {
             update_option(Constants::BEARER_TOKEN_OPTION, $token['access_token']);
             update_option(Constants::BEARER_TOKEN_EXPIRES_IN_OPTION, $token['expires_in'] ?? 0);
+
+            $accountDetails = $codesWholesaleService->getAccountDetails($token['access_token']);
+            if (empty($accountDetails)) {
+                return $this->createToken();
+            }
+
+            update_option(Constants::ACCOUNT_DETAILS_OPTION, json_encode($accountDetails));
         }
 
         if (empty($token) || empty($token['access_token'])) {

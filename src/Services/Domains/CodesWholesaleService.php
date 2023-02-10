@@ -35,6 +35,9 @@ class CodesWholesaleService
     public const ACCOUNT_DETAILS_ENDPOINT = '/v2/accounts/current';
     public const PRODUCTS_ENDPOINT = '/v2/products';
     public const LANGUAGES_ENDPOINT = '/v2/languages';
+    public const REGIONS_ENDPOINT = '/v2/regions';
+    public const TERRITORIES_ENDPOINT = '/v2/territory';
+    public const PLATFORMS_ENDPOINT = '/v2/platforms';
 
     /**
      * @var GuzzleHttp\Client
@@ -73,10 +76,17 @@ class CodesWholesaleService
         }
     }
 
-    public function getAccountDetails(): array
+    public function getAccountDetails(string $token): array
     {
         try {
-            $response = $this->client->get(self::ACCOUNT_DETAILS_ENDPOINT);
+            $response = $this->client->get(
+                self::ACCOUNT_DETAILS_ENDPOINT,
+                [
+                    'headers' => [
+                        'Authorization' => sprintf('Bearer %s', $token)
+                    ]
+                ]
+            );
 
             if ($response->getStatusCode() !== 200) {
                 return [];
@@ -93,6 +103,72 @@ class CodesWholesaleService
         try {
             $response = $this->client->get(
                 self::LANGUAGES_ENDPOINT,
+                [
+                    'headers' => [
+                        'Authorization' => sprintf('Bearer %s', $token)
+                    ]
+                ]
+            );
+
+            if ($response->getStatusCode() !== 200) {
+                return [];
+            }
+
+            return $this->fromJson($response);
+        } catch (Throwable $e) {
+            return [];
+        }
+    }
+
+    public function getSupportedRegions(string $token): array
+    {
+        try {
+            $response = $this->client->get(
+                self::REGIONS_ENDPOINT,
+                [
+                    'headers' => [
+                        'Authorization' => sprintf('Bearer %s', $token)
+                    ]
+                ]
+            );
+
+            if ($response->getStatusCode() !== 200) {
+                return [];
+            }
+
+            return $this->fromJson($response);
+        } catch (Throwable $e) {
+            return [];
+        }
+    }
+
+    public function getSupportedTerritories(string $token): array
+    {
+        try {
+            $response = $this->client->get(
+                self::TERRITORIES_ENDPOINT,
+                [
+                    'headers' => [
+                        'Authorization' => sprintf('Bearer %s', $token)
+                    ]
+                ]
+            );
+
+            if ($response->getStatusCode() !== 200) {
+                return [];
+            }
+
+            return $this->fromJson($response);
+        } catch (Throwable $e) {
+            return [];
+        }
+    }
+
+    public function getSupportedPlatforms(string $token): array
+    {
+        try {
+            $response = $this->client->get(
+                self::PLATFORMS_ENDPOINT,
                 [
                     'headers' => [
                         'Authorization' => sprintf('Bearer %s', $token)

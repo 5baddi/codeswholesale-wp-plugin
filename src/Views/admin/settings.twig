@@ -1,7 +1,7 @@
-{% include 'admin/partials/header.twig' with { isSuccess, message, title: 'CodesWholesale - General Settings' } %}
+{% include 'admin/partials/header.twig' with { isSuccess, message, title: 'General Settings' } %}
 <div class="wrap">
-	<form method="POST" action="options.php">
-		{{ function('settings_fields', groupName) }}
+	<form method="POST" action="{{ urls.generalSettings }}">
+		{{ function('wp_nonce_field', groupName) }}
 		<table class="form-table" role="presentation">
 			<tbody>
 				<tr>
@@ -135,27 +135,12 @@
 					</th>
 					<td>
 						<select id="cws5baddi_product_description_language" name="cws5baddi_product_description_language" aria-describedby="cws5baddi_product_description_language_description">
-							<option {% if values.cws5baddi_product_description_language == 'de' %} selected {% endif %} value="de">
-								{{ 'German'|translate }}
-							</option>
-							<option {% if values.cws5baddi_product_description_language == 'en' %} selected {% endif %} value="en">
-								{{ 'English'|translate }}
-							</option>
-							<option {% if values.cws5baddi_product_description_language == 'es' %} selected {% endif %} value="es">
-								{{ 'Spanish'|translate }}
-							</option>
-							<option {% if values.cws5baddi_product_description_language == 'fr' %} selected {% endif %} value="fr">
-								{{ 'French'|translate }}
-							</option>
-							<option {% if values.cws5baddi_product_description_language == 'Multilanguage' %} selected {% endif %} value="Multilanguage">
-								{{ 'Multilanguage'|translate }}
-							</option>
-							<option {% if values.cws5baddi_product_description_language == 'pl' %} selected {% endif %} value="pl">
-								{{ 'Polish'|translate }}
-							</option>
-							<option {% if values.cws5baddi_product_description_language == 'ru' %} selected {% endif %} value="ru">
-								{{ 'Russian'|translate }}
-							</option>
+							<option {% if values.cws5baddi_product_description_language == 'Multilanguage' %} selected {% endif %} values="Multilanguage">{{ 'Multilanguage'|translate }}</option>
+							{% for value, label in languages %}
+							{% if value in values.cws5baddi_supported_product_description_languages %}
+							<option {% if values.cws5baddi_product_description_language == value %} selected {% endif %} value="{{ value }}">{{ label }}</option>
+							{% endif %}
+							{% endfor %}
 						</select>
 						<p class="description" id="cws5baddi_product_description_language_description">
 							{{ 'Select a language of product descriptions.'|translate }}
@@ -185,7 +170,9 @@
 			</tbody>
 		</table>
 
-		{{ function('submit_button') }}
+		<p class="submit">
+			<input {% if isApiConnected != true %}disabled{% endif %} type="submit" id="submit" name="submit" class="button button-primary" value="{{ 'Save Changes'|translate }}">
+		</p>
 	</form>
 </div>
 {% include 'admin/partials/footer.twig' with { isApiConnected } %}
