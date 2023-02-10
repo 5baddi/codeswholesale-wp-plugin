@@ -129,23 +129,35 @@ trait AdminTrait
     {
         $data = [];
 
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && check_admin_referer($this->getGroupName())) {
+            $data['productDescriptionLanguage'] = sanitize_text_field($_POST['product_description_language'] ?? '');
+            $data['inStockFor'] = intval($_POST['in_stock_for'] ?? 0);
+            $data['region'] = sanitize_text_field($_POST['region'] ?? '');
+            $data['platform'] = sanitize_text_field($_POST['platform'] ?? '');
+
+            $data['message'] = cws5baddiTranslation('Start importing products...');
+            $data['isSuccess'] = true;
+            $data['isImporting'] = true;
+        }
+
         $this->render('admin/import-products.twig', $data);
     }
 
     public function render(string $view, array $data = []): void
     {
         $sharedData = [
-            'groupName'           => $this->getGroupName(),
-            'values'              => $this->settingsValues(),
-            'currencies'          => Constants::CURRENCIES_LIST,
-            'languages'           => Constants::LANGUAGES_LIST,
-            'logo'                => sprintf('%simg/logo.svg', CWS_5BADDI_PLUGIN_ASSETS_URL),
-            'isApiConnected'      => $this->isApiConnected(),
-            'urls'                => [
+            'groupName'      => $this->getGroupName(),
+            'values'         => $this->settingsValues(),
+            'currencies'     => Constants::CURRENCIES_LIST,
+            'languages'      => Constants::LANGUAGES_LIST,
+            'logo'           => sprintf('%simg/logo.svg', CWS_5BADDI_PLUGIN_ASSETS_URL),
+            'isApiConnected' => $this->isApiConnected(),
+            'urls'           => [
                 'accountSettings' => admin_url(sprintf('admin.php?page=%s-account-details', CodesWholesaleBy5baddi::SLUG)),
                 'generalSettings' => admin_url(sprintf('admin.php?page=%s', CodesWholesaleBy5baddi::SLUG)),
                 'importProducts'  => admin_url(sprintf('admin.php?page=%s-import-products', CodesWholesaleBy5baddi::SLUG)),
-            ]
+            ],
+            'isDebugMode' => (defined('WP_DEBUG') && WP_DEBUG === true)
         ];
 
         Timber::render($view, array_merge($sharedData, $data));

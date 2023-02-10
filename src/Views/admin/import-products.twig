@@ -1,71 +1,94 @@
 {% include 'admin/partials/header.twig' with { isSuccess, message, title: 'Import Products' } %}
 <div class="wrap">
-	<table class="form-table" role="presentation">
-		<tbody>
-			<tr>
-				<th scope="row">
-					<label for="cws5baddi_in_stock_for">{{ 'In stock for'|translate }}</label>
-				</th>
-				<td>
-					<input type="number" min="1" max="60" step="1" value="60" id="cws5baddi_in_stock_for" aria-describedby="cws5baddi_in_stock_for_description"/>
-					<p class="description" id="cws5baddi_in_stock_for_description">
-						{{ 'In stock on the platform for up to 60 days.'|translate }}
-					</p>
-				</td>
-			</tr>
-			<tr>
-				<th scope="row">
-					<label for="cws5baddi_product_description_language">{{ 'Product description language'|translate }}</label>
-				</th>
-				<td>
-					<select id="cws5baddi_product_description_language" aria-describedby="cws5baddi_product_description_language_description">
-						<option values="Multilanguage">{{ 'Multilanguage'|translate }}</option>
-						{% for value, label in languages %}
-							{% if value in values.cws5baddi_supported_product_description_languages %}
-								<option value="{{ value }}">{{ label }}</option>
-							{% endif %}
-						{% endfor %}
-					</select>
-					<p class="description" id="cws5baddi_product_description_language_description">
-						{{ 'Select a language of product descriptions.'|translate }}
-					</p>
-				</td>
-			</tr>
-			<tr>
-				<th scope="row">
-					<label for="cws5baddi_region">{{ 'Region'|translate }}</label>
-				</th>
-				<td>
-					<select id="cws5baddi_region" aria-describedby="cws5baddi_region_description">
-						{% for region in values.cws5baddi_supported_regions %}
-							<option value="{{ region }}">{{ region }}</option>
-						{% endfor %}
-					</select>
-					<p class="description" id="cws5baddi_region_description">
-						{{ 'Regions available on the platform.'|translate }}
-					</p>
-				</td>
-			</tr>
-			<tr>
-				<th scope="row">
-					<label for="cws5baddi_platform">{{ 'Platform'|translate }}</label>
-				</th>
-				<td>
-					<select id="cws5baddi_platform" aria-describedby="cws5baddi_platform_description">
-						{% for platform in values.cws5baddi_supported_platforms %}
-							<option value="{{ platform }}">{{ platform }}</option>
-						{% endfor %}
-					</select>
-					<p class="description" id="cws5baddi_platform_description">
-						{{ 'Platforms available on the platform.'|translate }}
-					</p>
-				</td>
-			</tr>
-		</tbody>
-	</table>
+    {% if isImporting != true %}
+    <form method="POST" action="{{ urls.importProducts }}">
+        {{ function('wp_nonce_field', groupName) }}
+        <table class="form-table" role="presentation">
+            <tbody>
+                <tr>
+                    <th scope="row">
+                        <label for="cws5baddi_in_stock_for">{{ 'In stock for'|translate }}</label>
+                    </th>
+                    <td>
+                        <input type="number" name="in_stock_for" min="1" max="60" step="1" value="60" id="cws5baddi_in_stock_for" aria-describedby="cws5baddi_in_stock_for_description"/>
+                        <p class="description" id="cws5baddi_in_stock_for_description">
+                            {{ 'In stock on the platform for up to 60 days.'|translate }}
+                        </p>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">
+                        <label for="cws5baddi_product_description_language">{{ 'Product description language'|translate }}</label>
+                    </th>
+                    <td>
+                        <select id="cws5baddi_product_description_language" name="product_description_language" aria-describedby="cws5baddi_product_description_language_description">
+                            <option values="Multilanguage" selected>{{ 'Multilanguage'|translate }}</option>
+                            {% for value, label in languages %}
+                                {% if value in values.cws5baddi_supported_product_description_languages %}
+                                    <option value="{{ value }}">{{ label }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                        <p class="description" id="cws5baddi_product_description_language_description">
+                            {{ 'Select a language of product descriptions.'|translate }}
+                        </p>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">
+                        <label for="cws5baddi_region">{{ 'Region'|translate }}</label>
+                    </th>
+                    <td>
+                        <select id="cws5baddi_region" name="region" aria-describedby="cws5baddi_region_description">
+                            {% for region in values.cws5baddi_supported_regions %}
+                                <option value="{{ region }}" {% if region == 'WORLDWIDE' %}selected{% endif %}>{{ region }}</option>
+                            {% endfor %}
+                        </select>
+                        <p class="description" id="cws5baddi_region_description">
+                            {{ 'Regions available on the platform.'|translate }}
+                        </p>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">
+                        <label for="cws5baddi_platform">{{ 'Platform'|translate }}</label>
+                    </th>
+                    <td>
+                        <select id="cws5baddi_platform" name="platform" aria-describedby="cws5baddi_platform_description">
+                            {% for platform in values.cws5baddi_supported_platforms %}
+                                <option value="{{ platform }}" {% if platform == 'None' %}selected{% endif %}>{{ platform }}</option>
+                            {% endfor %}
+                        </select>
+                        <p class="description" id="cws5baddi_platform_description">
+                            {{ 'Platforms available on the platform.'|translate }}
+                        </p>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
 
-	<p class="submit">
-		<input {% if isApiConnected != true %}disabled{% endif %} type="button" id="import-btn" class="button button-primary" value="{{ 'Import products'|translate }}">
-	</p>
+        <p class="submit">
+            <input {% if isApiConnected != true %}disabled{% endif %} type="submit" name="submit" id="submit" class="button button-primary" value="{{ 'Import products'|translate }}">
+        </p>
+    </form>
+    {% else %}
+    <p id="importing-products-output"></p>
+    {% endif %}
 </div>
 {% include 'admin/partials/footer.twig' with { isApiConnected } %}
+
+{% if isImporting == true %}
+<script type="text/javascript">
+    jQuery(function () {
+        try {
+
+        } catch (e) {
+            {% if isDebugMode == true %}
+            console.log(e);
+            {% endif %}
+
+            alert(`{{ 'Something going wrong! please try again or contact support...'|translate }}`);
+        }
+    });
+</script>
+{% endif %}
