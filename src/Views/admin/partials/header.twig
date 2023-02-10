@@ -2,7 +2,7 @@
 <hr/>
 <div class="wrap">
     {% if title is defined %}
-	<h2>{{ function('cws5baddiTranslation', title) }}</h2>
+	<h2>{{ title|translate }}</h2>
     {% endif %}
 </div>
 {% include 'admin/partials/alert.twig' with { isSuccess, message } %}

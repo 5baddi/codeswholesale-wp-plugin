@@ -6,66 +6,66 @@
 			<tbody>
 				<tr>
 					<th scope="row">
-						<label for="cws5baddi_api_client_id">{{ function('cws5baddiTranslation', 'API client ID') }}</label>
+						<label for="cws5baddi_api_client_id">{{ 'API client ID'|translate }}</label>
 					</th>
 					<td>
 						<input style="min-width: 40%;" type="text" value="{{ values.cws5baddi_api_client_id }}" id="cws5baddi_api_client_id" name="cws5baddi_api_client_id" aria-describedby="cws5baddi_api_client_id_description"/>
 						<p class="description" id="cws5baddi_api_client_id_description">
-							{{ function('cws5baddiTranslation', 'Generate client ID under API tab on CodesWholesale.') }}
+							{{ 'Generate client ID under API tab on CodesWholesale.'|translate }}
 						</p>
 					</td>
 				</tr>
 				<tr>
 					<th scope="row">
-						<label for="cws5baddi_api_client_secret">{{ function('cws5baddiTranslation', 'API client secret') }}</label>
+						<label for="cws5baddi_api_client_secret">{{ 'API client secret'|translate }}</label>
 					</th>
 					<td>
 						<input style="min-width: 40%;" type="text" value="{{ values.cws5baddi_api_client_secret }}" id="cws5baddi_api_client_secret" name="cws5baddi_api_client_secret" aria-describedby="cws5baddi_api_client_secret_description"/>
 						<p class="description" id="cws5baddi_api_client_secret_description">
-							{{ function('cws5baddiTranslation', 'Generate client secret under API tab on CodesWholesale.') }}
+							{{ 'Generate client secret under API tab on CodesWholesale.'|translate }}
 						</p>
 					</td>
 				</tr>
 				<tr>
 					<th scope="row">
-						<label for="cws5baddi_api_client_signature">{{ function('cws5baddiTranslation', 'API client signature') }}</label>
+						<label for="cws5baddi_api_client_signature">{{ 'API client signature'|translate }}</label>
 					</th>
 					<td>
 						<input style="min-width: 40%;" type="text" value="{{ values.cws5baddi_api_client_signature }}" id="cws5baddi_api_client_signature" name="cws5baddi_api_client_signature" aria-describedby="cws5baddi_api_client_signature_description"/>
 						<p class="description" id="cws5baddi_api_client_signature_description">
-							{{ function('cws5baddiTranslation', 'Get client signature under API tab on CodesWholesale.') }}
+							{{ 'Get client signature under API tab on CodesWholesale.'|translate }}
 						</p>
 					</td>
 				</tr>
 				<tr>
 					<th scope="row">
-						<label for="cws5baddi_profit_margin_type">{{ function('cws5baddiTranslation', 'Profit margin type') }}</label>
+						<label for="cws5baddi_profit_margin_type">{{ 'Profit margin type'|translate }}</label>
 					</th>
 					<td>
 						<label for="cws5baddi_profit_margin_type">
 							<input name="cws5baddi_profit_margin_type" type="radio" id="cws5baddi_profit_margin_type" value="1" {% if values.cws5baddi_profit_margin_type == 1 %} checked {% endif %}/>
-							{{ function('cws5baddiTranslation', 'Amount') }}
+							{{ 'Amount'|translate }}
 						</label>
 						<label for="cws5baddi_profit_margin_type" style="margin-left: 2rem;">
 							<input name="cws5baddi_profit_margin_type" type="radio" id="cws5baddi_profit_margin_type" value="2" {% if not values.cws5baddi_profit_margin_type or values.cws5baddi_profit_margin_type == 2 %} checked {% endif %}/>
-							{{ function('cws5baddiTranslation', 'Percentage') }}
+							{{ 'Percentage'|translate }}
 						</label>
 					</td>
 				</tr>
 				<tr>
 					<th scope="row">
-						<label for="cws5baddi_profit_margin_value">{{ function('cws5baddiTranslation', 'Profit margin value') }}</label>
+						<label for="cws5baddi_profit_margin_value">{{ 'Profit margin value'|translate }}</label>
 					</th>
 					<td>
 						<input type="number" value="{{ values.cws5baddi_profit_margin_value ?? 5 }}" id="cws5baddi_profit_margin_value" name="cws5baddi_profit_margin_value" aria-describedby="cws5baddi_profit_margin_value_description"/>
 						<p class="description" id="cws5baddi_profit_margin_value_description">
-							{{ function('cws5baddiTranslation', 'Enter a value depending on the margin type chosen. The value will be added to CodesWholesale price and will apply to all products.') }}
+							{{ 'Enter a value depending on the margin type chosen. The value will be added to CodesWholesale price and will apply to all products.'|translate }}
 						</p>
 					</td>
 				</tr>
 				<tr>
 					<th scope="row">
-						<label for="cws5baddi_currency">{{ function('cws5baddiTranslation', 'Currency') }}</label>
+						<label for="cws5baddi_currency">{{ 'Currency'|translate }}</label>
 					</th>
 					<td>
 						<select id="cws5baddi_currency" name="cws5baddi_currency" aria-describedby="cws5baddi_currency_description">
@@ -77,139 +77,139 @@
 				</tr>
 				<tr>
 					<th scope="row">
-						<label for="cws5baddi_auto_complete_orders">{{ function('cws5baddiTranslation', 'Auto-complete orders') }}</label>
+						<label for="cws5baddi_auto_complete_orders">{{ 'Auto-complete orders'|translate }}</label>
 					</th>
 					<td>
 						<label for="cws5baddi_auto_complete_orders">
 							<input name="cws5baddi_auto_complete_orders" type="checkbox" id="cws5baddi_auto_complete_orders" value="1" {% if values.cws5baddi_auto_complete_orders == true %} checked {% endif %}/>
 						</label>
 						<p class="description" id="cws5baddi_auto_complete_orders_description">
-							{{ function('cws5baddiTranslation', 'Get orders automatically completed upon payment. This option only works with IPN payments (eg. PayPal).') }}
+							{{ 'Get orders automatically completed upon payment. This option only works with IPN payments (eg. PayPal).'|translate }}
 						</p>
 					</td>
 				</tr>
 				<tr>
 					<th scope="row">
-						<label for="cws5baddi_auto_complete_orders">{{ function('cws5baddiTranslation', 'Pre-order products') }}</label>
+						<label for="cws5baddi_auto_complete_orders">{{ 'Pre-order products'|translate }}</label>
 					</th>
 					<td>
 						<label for="cws5baddi_pre_order_products">
 							<input name="cws5baddi_pre_order_products" type="checkbox" id="cws5baddi_pre_order_products" value="1" {% if values.cws5baddi_pre_order_products == true %} checked {% endif %}/>
 						</label>
 						<p class="description" id="cws5baddi_pre_order_products_description">
-							{{ function('cws5baddiTranslation', 'Enable or disable purchasing pre-order products.') }}
+							{{ 'Enable or disable purchasing pre-order products.'|translate }}
 						</p>
 					</td>
 				</tr>
 				<tr>
 					<th scope="row">
-						<label for="cws5baddi_automatic_product_import">{{ function('cws5baddiTranslation', 'Automatic product import') }}</label>
+						<label for="cws5baddi_automatic_product_import">{{ 'Automatic product import'|translate }}</label>
 					</th>
 					<td>
 						<label for="cws5baddi_automatic_product_import">
 							<input name="cws5baddi_automatic_product_import" type="checkbox" id="cws5baddi_automatic_product_import" value="1" {% if values.cws5baddi_automatic_product_import == true %} checked {% endif %}/>
 						</label>
 						<p class="description" id="cws5baddi_automatic_product_import_description">
-							{{ function('cws5baddiTranslation', 'Import newly added products automatically.') }}
+							{{ 'Import newly added products automatically.'|translate }}
 						</p>
 					</td>
 				</tr>
 				<tr>
 					<th scope="row">
-						<label for="cws5baddi_low_balance_notification">{{ function('cws5baddiTranslation', 'Low-balance notification') }}</label>
+						<label for="cws5baddi_low_balance_notification">{{ 'Low-balance notification'|translate }}</label>
 					</th>
 					<td>
 						<input type="number" value="{{ values.cws5baddi_low_balance_notification ?? 100 }}" id="cws5baddi_low_balance_notification" name="cws5baddi_low_balance_notification" aria-describedby="cws5baddi_low_balance_notification_description"/>
 						<p class="description" id="cws5baddi_low_balance_notification_description">
-							{{ function('cws5baddiTranslation', 'If your account balance on CodesWholesale reaches below the value entered, you will receive an email notification.') }}
+							{{ 'If your account balance on CodesWholesale reaches below the value entered, you will receive an email notification.'|translate }}
 						</p>
 					</td>
 				</tr>
 				<tr>
 					<th scope="row">
-						<label for="cws5baddi_risk_score_value">{{ function('cws5baddiTranslation', 'Risk score value') }}</label>
+						<label for="cws5baddi_risk_score_value">{{ 'Risk score value'|translate }}</label>
 					</th>
 					<td>
 						<input type="number" value="{{ values.cws5baddi_risk_score_value ?? 2 }}" id="cws5baddi_risk_score_value" name="cws5baddi_risk_score_value" aria-describedby="cws5baddi_risk_score_value_description"/>
 						<p class="description" id="cws5baddi_risk_score_value_description">
-							{{ function('cws5baddiTranslation', 'The order will be suspended if the client’s risk score is equal or higher than the value entered. The recommended value is 1.5.') }}
+							{{ 'The order will be suspended if the client’s risk score is equal or higher than the value entered. The recommended value is 1.5.'|translate }}
 						</p>
 					</td>
 				</tr>
 				<tr>
 					<th scope="row">
-						<label for="cws5baddi_double_check_price">{{ function('cws5baddiTranslation', 'Double-check price') }}</label>
+						<label for="cws5baddi_double_check_price">{{ 'Double-check price'|translate }}</label>
 					</th>
 					<td>
 						<label for="cws5baddi_double_check_price">
 							<input name="cws5baddi_double_check_price" type="checkbox" id="cws5baddi_double_check_price" value="1" {% if values.cws5baddi_double_check_price == true %} checked {% endif %}/>
 						</label>
 						<p class="description" id="cws5baddi_double_check_price_description">
-							{{ function('cws5baddiTranslation', 'Compare your stock price with that of CodesWholesale.') }}
+							{{ 'Compare your stock price with that of CodesWholesale.'|translate }}
 						</p>
 					</td>
 				</tr>
 				<tr>
 					<th scope="row">
-						<label for="cws5baddi_hide_products">{{ function('cws5baddiTranslation', 'Hide products') }}</label>
+						<label for="cws5baddi_hide_products">{{ 'Hide products'|translate }}</label>
 					</th>
 					<td>
 						<label for="cws5baddi_hide_products">
 							<input name="cws5baddi_hide_products" type="checkbox" id="cws5baddi_hide_products" value="1" {% if values.cws5baddi_hide_products == true %} checked {% endif %}/>
 						</label>
 						<p class="description" id="cws5baddi_hide_products_description">
-							{{ function('cws5baddiTranslation', 'Hide products that are disabled on CodesWholesale.') }}
+							{{ 'Hide products that are disabled on CodesWholesale.'|translate }}
 						</p>
 					</td>
 				</tr>
 				<tr>
 					<th scope="row">
-						<label for="cws5baddi_product_description_language">{{ function('cws5baddiTranslation', 'Product description language') }}</label>
+						<label for="cws5baddi_product_description_language">{{ 'Product description language'|translate }}</label>
 					</th>
 					<td>
 						<select id="cws5baddi_product_description_language" name="cws5baddi_product_description_language" aria-describedby="cws5baddi_product_description_language_description">
 							<option {% if values.cws5baddi_product_description_language == 'de' %} selected {% endif %} value="de">
-								{{ function('cws5baddiTranslation', 'German') }}
+								{{ 'German'|translate }}
 							</option>
 							<option {% if values.cws5baddi_product_description_language == 'en' %} selected {% endif %} value="en">
-								{{ function('cws5baddiTranslation', 'English') }}
+								{{ 'English'|translate }}
 							</option>
 							<option {% if values.cws5baddi_product_description_language == 'es' %} selected {% endif %} value="es">
-								{{ function('cws5baddiTranslation', 'Spanish') }}
+								{{ 'Spanish'|translate }}
 							</option>
 							<option {% if values.cws5baddi_product_description_language == 'fr' %} selected {% endif %} value="fr">
-								{{ function('cws5baddiTranslation', 'French') }}
+								{{ 'French'|translate }}
 							</option>
 							<option {% if values.cws5baddi_product_description_language == 'Multilanguage' %} selected {% endif %} value="Multilanguage">
-								{{ function('cws5baddiTranslation', 'Multilanguage') }}
+								{{ 'Multilanguage'|translate }}
 							</option>
 							<option {% if values.cws5baddi_product_description_language == 'pl' %} selected {% endif %} value="pl">
-								{{ function('cws5baddiTranslation', 'Polish') }}
+								{{ 'Polish'|translate }}
 							</option>
 							<option {% if values.cws5baddi_product_description_language == 'ru' %} selected {% endif %} value="ru">
-								{{ function('cws5baddiTranslation', 'Russian') }}
+								{{ 'Russian'|translate }}
 							</option>
 						</select>
 						<p class="description" id="cws5baddi_product_description_language_description">
-							{{ function('cws5baddiTranslation', 'Select a language of product descriptions.') }}
+							{{ 'Select a language of product descriptions.'|translate }}
 						</p>
 					</td>
 				</tr>
 				<tr>
 					<th scope="row">
-						<label for="cws5baddi_charm_pricing">{{ function('cws5baddiTranslation', 'Charm pricing') }}</label>
+						<label for="cws5baddi_charm_pricing">{{ 'Charm pricing'|translate }}</label>
 					</th>
 					<td>
 						<label for="cws5baddi_charm_pricing">
 							<input name="cws5baddi_charm_pricing" type="checkbox" id="cws5baddi_charm_pricing" value="1" {% if values.cws5baddi_charm_pricing == true %} checked {% endif %}/>
 						</label>
 						<p class="description" id="cws5baddi_charm_pricing_description">
-							{{ function('cws5baddiTranslation', 'Make all your prices more attractive to your customers. See the examples below:') }}
+							{{ 'Make all your prices more attractive to your customers. See the examples below:'|translate }}
 							<ul>
-								<li><p class="description">10.01 - 10.29 {{ function('cws5baddiTranslation', 'range') }} ➜ 10.29</p></li>
-								<li><p class="description">10.30 {{ function('cws5baddiTranslation', 'to') }} 10.49 {{ function('cws5baddiTranslation', 'range') }} ➜ 10.49</p></li>
-								<li><p class="description">10.50 {{ function('cws5baddiTranslation', 'to') }} 10.79 {{ function('cws5baddiTranslation', 'range') }} ➜ 10.79</p></li>
-								<li><p class="description">10.80 {{ function('cws5baddiTranslation', 'to') }} 10.99 {{ function('cws5baddiTranslation', 'range') }} ➜ 10.99</p></li>
+								<li><p class="description">10.01 - 10.29 {{ 'range'|translate }} ➜ 10.29</p></li>
+								<li><p class="description">10.30 {{ 'to'|translate }} 10.49 {{ 'range'|translate }} ➜ 10.49</p></li>
+								<li><p class="description">10.50 {{ 'to'|translate }} 10.79 {{ 'range'|translate }} ➜ 10.79</p></li>
+								<li><p class="description">10.80 {{ 'to'|translate }} 10.99 {{ 'range'|translate }} ➜ 10.99</p></li>
 								<li><p class="description">10.00 ➜ 9.99</p></li>
 							</ul>
 						</p>

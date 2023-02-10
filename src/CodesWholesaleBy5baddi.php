@@ -14,6 +14,7 @@ namespace BaddiServices\CodesWholesale;
 
 use Timber\Timber;
 use BaddiServices\CodesWholesale\Traits\AdminMenu;
+use BaddiServices\CodesWholesale\Traits\TimberTrait;
 
 /**
  * Class CodesWholesaleBy5baddi.
@@ -26,7 +27,7 @@ use BaddiServices\CodesWholesale\Traits\AdminMenu;
  */
 class CodesWholesaleBy5baddi
 {
-    use AdminMenu;
+    use AdminMenu, TimberTrait;
 
     public const SLUG = 'codeswholesale-by-5baddi';
 
@@ -57,6 +58,7 @@ class CodesWholesaleBy5baddi
         // Set twig view path
         Timber::$locations = CWS_5BADDI_PLUGIN_BASEPATH . 'src/Views/';
 
+        // Actions
         // Register hooks
         add_action('init', [$this, 'init'], 1);
 
@@ -65,6 +67,10 @@ class CodesWholesaleBy5baddi
             add_action('admin_menu', [$this, 'registerSettingsPage']);
             add_action('admin_init', [$this, 'registerSettingsPageOptions']);
         }
+
+        // Filters
+        // Timber twig filter
+        add_filter('timber/twig', [$this, 'addTwigHelpers']);
     }
 
     public function checkWooCommerceIsInstalled(): void
