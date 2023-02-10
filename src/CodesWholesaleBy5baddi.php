@@ -15,6 +15,7 @@ namespace BaddiServices\CodesWholesale;
 use Timber\Timber;
 use BaddiServices\CodesWholesale\Traits\AdminMenu;
 use BaddiServices\CodesWholesale\Traits\TimberTrait;
+use BaddiServices\CodesWholesale\Traits\CodesWholesaleTrait;
 
 /**
  * Class CodesWholesaleBy5baddi.
@@ -27,7 +28,7 @@ use BaddiServices\CodesWholesale\Traits\TimberTrait;
  */
 class CodesWholesaleBy5baddi
 {
-    use AdminMenu, TimberTrait;
+    use AdminMenu, TimberTrait, CodesWholesaleTrait;
 
     public const SLUG = 'codeswholesale-by-5baddi';
 
@@ -61,16 +62,8 @@ class CodesWholesaleBy5baddi
         // Actions
         // Register hooks
         add_action('init', [$this, 'init'], 1);
-
-        // Register custom settings page
-        if (is_admin()) {
-            add_action('admin_menu', [$this, 'registerSettingsPage']);
-            add_action('admin_init', [$this, 'registerSettingsPageOptions']);
-        }
-
-        // Filters
-        // Timber twig filter
-        add_filter('timber/twig', [$this, 'addTwigHelpers']);
+        // add_action('rest_api_init', [$this, 'initRestApiRoutes']);
+        add_action('plugins_loaded', [$this, 'pluginsLoaded']);
     }
 
     public function checkWooCommerceIsInstalled(): void
@@ -82,11 +75,19 @@ class CodesWholesaleBy5baddi
 
     public function init(): void
     {
-        
+        // Register custom settings page
+        if (is_admin()) {
+            add_action('admin_menu', [$this, 'registerSettingsPage']);
+            add_action('admin_init', [$this, 'registerSettingsPageOptions']);
+        }
+
+        // Filters
+        // Timber twig filter
+        add_filter('timber/twig', [$this, 'addTwigHelpers']);
     }
 
     public function pluginsLoaded(): void
     {
-
+        $this->authenticate();
     }
 }

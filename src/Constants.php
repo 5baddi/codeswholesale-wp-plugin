@@ -39,6 +39,8 @@ class Constants
     public const HIDE_PRODUCTS_OPTION = 'cws5baddi_hide_products';
     public const PRODUCT_DESCRIPTION_LANGUAGE_OPTION = 'cws5baddi_product_description_language';
     public const CHARM_PRICING_OPTION = 'cws5baddi_charm_pricing';
+    public const BEARER_TOKEN_OPTION = 'cws5baddi_bearer_token';
+    public const BEARER_TOKEN_EXPIRES_IN_OPTION = 'cws5baddi_bearer_token_expires_in';
 
     public const PROFIT_MARGIN_AMOUNT = 1;
     public const PROFIT_MARGIN_PERCENTAGE = 2;
@@ -54,4 +56,5 @@ class Constants
     public const DEFAULT_LOW_BALANCE_NOTIFICATION_VALUE = 100;
     public const DEFAULT_RISK_SCORE_VALUE = 2;
     public const DEFAULT_PRODUCT_DESCRIPTION_LANGUAGE = 'en';
+    public const DEFAULT_GRANT_TYPE = 'client_credentials';
 }

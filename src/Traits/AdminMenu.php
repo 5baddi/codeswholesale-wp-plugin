@@ -15,6 +15,8 @@ namespace BaddiServices\CodesWholesale\Traits;
 use Timber\Timber;
 use BaddiServices\CodesWholesale\Constants;
 use BaddiServices\CodesWholesale\CodesWholesaleBy5baddi;
+use BaddiServices\CodesWholesale\Core\Container;
+use BaddiServices\CodesWholesale\Services\Domains\CodesWholesaleService;
 
 /**
  * Trait AdminMenu.
@@ -262,6 +264,10 @@ trait AdminMenu
             => get_option(Constants::HIDE_PRODUCTS_OPTION, Constants::DEFAULT_PRODUCT_DESCRIPTION_LANGUAGE),
             Constants::CHARM_PRICING_OPTION
             => boolval(get_option(Constants::CHARM_PRICING_OPTION, 0)),
+            Constants::BEARER_TOKEN_OPTION
+            => get_option(Constants::BEARER_TOKEN_OPTION, ''),
+            Constants::BEARER_TOKEN_EXPIRES_IN_OPTION
+            => get_option(Constants::BEARER_TOKEN_EXPIRES_IN_OPTION, 0),
         ];
     }
 
