@@ -21,11 +21,11 @@ const browserSyncEnabled = process.env.NODE_ENV !== 'production';
 const paths = {
     build: './assets',
     css: {
-        src: './resources/css/*.css',
+        src: './resources/css/**/*.css',
         dest: './assets/css/',
     },
     sass: {
-        src: './resources/css/*.scss',
+        src: './resources/scss/**/*.scss',
         dest: './assets/css/',
     },
     fonts: {

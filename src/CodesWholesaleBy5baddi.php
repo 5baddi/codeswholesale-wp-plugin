@@ -81,6 +81,7 @@ class CodesWholesaleBy5baddi
         if (is_admin()) {
             add_action('admin_menu', [$this, 'registerSettingsPage']);
             add_action('admin_init', [$this, 'registerSettingsPageOptions']);
+            add_action('admin_enqueue_scripts', [$this, 'registerAdminStylesAndScripts']);
         }
 
         // Filters
@@ -100,8 +101,8 @@ class CodesWholesaleBy5baddi
     public function initRestApiRoutes(): void
     {
         $controllersPaths = array_merge(
-            glob(sprintf('%ssrc/Controllers/*.php', CWS_5BADDI_PLUGIN_BASEPATH)), 
-            glob(sprintf('%ssrc/Controllers/**/*.php', CWS_5BADDI_PLUGIN_BASEPATH)), 
+            glob(sprintf('%ssrc/Controllers/*.php', CWS_5BADDI_PLUGIN_BASEPATH)),
+            glob(sprintf('%ssrc/Controllers/**/*.php', CWS_5BADDI_PLUGIN_BASEPATH)),
             glob(sprintf('%ssrc/Controllers/**/**/*.php', CWS_5BADDI_PLUGIN_BASEPATH))
         );
 
@@ -116,6 +117,30 @@ class CodesWholesaleBy5baddi
 
             $controllerInstance = new $namespace;
             $controllerInstance->{'register_routes'}();
+        }
+    }
+
+    public function registerAdminStylesAndScripts(): void
+    {
+        $adminStyles = glob(sprintf('%sassets/css/admin/*.css', CWS_5BADDI_PLUGIN_BASEPATH));
+        $adminScripts = glob(sprintf('%sassets/js/admin/*.js', CWS_5BADDI_PLUGIN_BASEPATH));
+
+        foreach ($adminStyles as $adminStyle) {
+            wp_enqueue_style(
+                sprintf('%s_%s', self::NAMESPACE, basename($adminStyle)),
+                sprintf('%s%s', CWS_5BADDI_PLUGIN_ASSETS_URL, Str::replace(CWS_5BADDI_PLUGIN_ASSETS_PATH, '', $adminStyle)),
+                [],
+                CWS_5BADDI_PLUGIN_ASSETS_VERSION
+            );
+        }
+
+        foreach ($adminScripts as $adminScript) {
+            wp_enqueue_script(
+                sprintf('%s_%s', self::NAMESPACE, basename($adminScript)),
+                sprintf('%s%s', CWS_5BADDI_PLUGIN_ASSETS_URL, Str::replace(CWS_5BADDI_PLUGIN_ASSETS_PATH, '', $adminScript)),
+                ['jQuery'],
+                CWS_5BADDI_PLUGIN_ASSETS_VERSION
+            );
         }
     }
 }

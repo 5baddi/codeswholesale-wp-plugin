@@ -1,7 +1,7 @@
 {% include 'admin/partials/header.twig' with { isSuccess, message, title: 'Account Details' } %}
 {% if isApiConnected == true and values.cws5baddi_account_details is not empty %}
 <div class="wrap">
-	<table class="form-table" role="presentation" style="background: white; display: inline-table; width: 40%; border-radius: .5rem; box-shadow: 0 0 2px 2px #d0d0d0;">
+	<table class="form-table cws5baddi shadow-card" role="presentation" style="width: 40%;">
 		<tbody>
 			<tr>
 				<th scope="row" style="padding: 1rem;">
@@ -26,7 +26,7 @@
 <div class="wrap">
 	<form method="POST" action="{{ urls.accountSettings }}">
 		{{ function('wp_nonce_field', groupName) }}
-		<table class="form-table" role="presentation">
+		<table class="form-table cws5baddi shadow-card" role="presentation">
 			<tbody>
 				<tr>
 					<th scope="row">

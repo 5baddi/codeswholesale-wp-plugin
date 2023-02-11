@@ -1,0 +1,14 @@
+body {
+    .cws5baddi {
+        &.shadow-card {
+            background-color: white;
+            box-shadow: 0 0 2px 2px #d0d0d0;
+            border-radius: .5rem;
+            padding: 1rem;
+
+            th, td {
+                padding: 1rem;
+            }
+        }
+    }
+}

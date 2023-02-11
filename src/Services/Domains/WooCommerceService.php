@@ -88,7 +88,7 @@ class WooCommerceService
 
         $value = $price['value'] ?? 0;
         $priceMargin = get_option(Constants::PROFIT_MARGIN_VALUE_OPTION, Constants::DEFAULT_PROFIT_MARGIN_VALUE);
-        $priceMarginType = get_option(Constants::PROFIT_MARGIN_TYPE_OPTION, Constants::DEFAULT_PROFIT_MARGIN_TYPE);
+        $priceMarginType = intval(get_option(Constants::PROFIT_MARGIN_TYPE_OPTION, Constants::DEFAULT_PROFIT_MARGIN_TYPE));
 
         if ($priceMarginType === Constants::PROFIT_MARGIN_AMOUNT) {
             $value += $priceMargin;

@@ -2,7 +2,7 @@
 <div class="wrap">
 	<form method="POST" action="{{ urls.generalSettings }}">
 		{{ function('wp_nonce_field', groupName) }}
-		<table class="form-table" role="presentation">
+		<table class="form-table cws5baddi shadow-card" role="presentation">
 			<tbody>
 				<tr>
 					<th scope="row">
@@ -30,7 +30,7 @@
 						</p>
 					</td>
 				</tr>
-				<tr>
+				{# <tr>
 					<th scope="row">
 						<label for="cws5baddi_currency">{{ 'Currency'|translate }}</label>
 					</th>
@@ -41,8 +41,8 @@
 							{% endfor %}
 						</select>
 					</td>
-				</tr>
-				<tr>
+				</tr> #}
+				{# <tr>
 					<th scope="row">
 						<label for="cws5baddi_auto_complete_orders">{{ 'Auto-complete orders'|translate }}</label>
 					</th>
@@ -128,7 +128,7 @@
 							{{ 'Hide products that are disabled on CodesWholesale.'|translate }}
 						</p>
 					</td>
-				</tr>
+				</tr>#}
 				<tr>
 					<th scope="row">
 						<label for="cws5baddi_product_description_language">{{ 'Product description language'|translate }}</label>
@@ -147,7 +147,7 @@
 						</p>
 					</td>
 				</tr>
-				<tr>
+				{#<tr>
 					<th scope="row">
 						<label for="cws5baddi_charm_pricing">{{ 'Charm pricing'|translate }}</label>
 					</th>
@@ -166,7 +166,7 @@
 							</ul>
 						</p>
 					</td>
-				</tr>
+				</tr> #}
 			</tbody>
 		</table>
 

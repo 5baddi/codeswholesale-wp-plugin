@@ -114,7 +114,16 @@ trait AdminTrait
         $data = [];
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && check_admin_referer($this->getGroupName())) {
-            $this->saveGeneralSettings();
+            $profitMargin = intval($_POST[Constants::PROFIT_MARGIN_VALUE_OPTION]);
+            if ($profitMargin < 1 || $profitMargin > 60) {
+                $data['message'] = cws5baddiTranslation('In stock on the platform for should be between 1 to 60 days!');
+                $data['isSuccess'] = false;
+
+                $this->render('admin/settings.twig', $data);
+
+                return;
+            }
+
 
             $data['message'] = cws5baddiTranslation('General settings saved successfully.');
             $data['isSuccess'] = true;
@@ -201,7 +210,7 @@ trait AdminTrait
             Constants::HIDE_PRODUCTS_OPTION
             => boolval(get_option(Constants::HIDE_PRODUCTS_OPTION, 1)),
             Constants::PRODUCT_DESCRIPTION_LANGUAGE_OPTION
-            => get_option(Constants::HIDE_PRODUCTS_OPTION, Constants::DEFAULT_PRODUCT_DESCRIPTION_LANGUAGE),
+            => get_option(Constants::PRODUCT_DESCRIPTION_LANGUAGE_OPTION, Constants::DEFAULT_PRODUCT_DESCRIPTION_LANGUAGE),
             Constants::CHARM_PRICING_OPTION
             => boolval(get_option(Constants::CHARM_PRICING_OPTION, 0)),
             Constants::BEARER_TOKEN_OPTION
@@ -254,43 +263,8 @@ trait AdminTrait
         );
 
         update_option(
-            Constants::CURRENCY_OPTION,
-            sanitize_text_field($_POST[Constants::CURRENCY_OPTION] ?? Constants::DEFAULT_CURRENCY)
-        );
-
-        update_option(
-            Constants::AUTO_COMPLETE_ORDERS_OPTION,
-            intval($_POST[Constants::AUTO_COMPLETE_ORDERS_OPTION] ?? 1)
-        );
-
-        update_option(
-            Constants::PRE_ORDER_PRODUCTS_OPTION,
-            intval($_POST[Constants::PRE_ORDER_PRODUCTS_OPTION] ?? 1)
-        );
-
-        update_option(
-            Constants::AUTOMATIC_PRODUCT_IMPORT_OPTION,
-            intval($_POST[Constants::AUTOMATIC_PRODUCT_IMPORT_OPTION] ?? 0)
-        );
-
-        update_option(
-            Constants::LOW_BALANCE_NOTIFICATION_OPTION,
-            intval($_POST[Constants::LOW_BALANCE_NOTIFICATION_OPTION] ?? Constants::DEFAULT_LOW_BALANCE_NOTIFICATION_VALUE)
-        );
-
-        update_option(
-            Constants::RISK_SCORE_VALUE_OPTION,
-            intval($_POST[Constants::RISK_SCORE_VALUE_OPTION] ?? Constants::DEFAULT_RISK_SCORE_VALUE)
-        );
-
-        update_option(
-            Constants::DOUBLE_CHECK_PRICE_OPTION,
-            intval($_POST[Constants::DOUBLE_CHECK_PRICE_OPTION] ?? 1)
-        );
-
-        update_option(
-            Constants::HIDE_PRODUCTS_OPTION,
-            intval($_POST[Constants::HIDE_PRODUCTS_OPTION] ?? 1)
+            Constants::PROFIT_MARGIN_VALUE_OPTION,
+            intval($_POST[Constants::PROFIT_MARGIN_VALUE_OPTION] ?? Constants::DEFAULT_PROFIT_MARGIN_VALUE)
         );
 
         update_option(
@@ -298,9 +272,49 @@ trait AdminTrait
             sanitize_text_field($_POST[Constants::PRODUCT_DESCRIPTION_LANGUAGE_OPTION] ?? Constants::DEFAULT_PRODUCT_DESCRIPTION_LANGUAGE)
         );
 
-        update_option(
-            Constants::CHARM_PRICING_OPTION,
-            intval($_POST[Constants::CHARM_PRICING_OPTION] ?? 0)
-        );
+        // update_option(
+        //     Constants::CURRENCY_OPTION,
+        //     sanitize_text_field($_POST[Constants::CURRENCY_OPTION] ?? Constants::DEFAULT_CURRENCY)
+        // );
+
+        // update_option(
+        //     Constants::AUTO_COMPLETE_ORDERS_OPTION,
+        //     intval($_POST[Constants::AUTO_COMPLETE_ORDERS_OPTION] ?? 1)
+        // );
+
+        // update_option(
+        //     Constants::PRE_ORDER_PRODUCTS_OPTION,
+        //     intval($_POST[Constants::PRE_ORDER_PRODUCTS_OPTION] ?? 1)
+        // );
+
+        // update_option(
+        //     Constants::AUTOMATIC_PRODUCT_IMPORT_OPTION,
+        //     intval($_POST[Constants::AUTOMATIC_PRODUCT_IMPORT_OPTION] ?? 0)
+        // );
+
+        // update_option(
+        //     Constants::LOW_BALANCE_NOTIFICATION_OPTION,
+        //     intval($_POST[Constants::LOW_BALANCE_NOTIFICATION_OPTION] ?? Constants::DEFAULT_LOW_BALANCE_NOTIFICATION_VALUE)
+        // );
+
+        // update_option(
+        //     Constants::RISK_SCORE_VALUE_OPTION,
+        //     intval($_POST[Constants::RISK_SCORE_VALUE_OPTION] ?? Constants::DEFAULT_RISK_SCORE_VALUE)
+        // );
+
+        // update_option(
+        //     Constants::DOUBLE_CHECK_PRICE_OPTION,
+        //     intval($_POST[Constants::DOUBLE_CHECK_PRICE_OPTION] ?? 1)
+        // );
+
+        // update_option(
+        //     Constants::HIDE_PRODUCTS_OPTION,
+        //     intval($_POST[Constants::HIDE_PRODUCTS_OPTION] ?? 1)
+        // );
+
+        // update_option(
+        //     Constants::CHARM_PRICING_OPTION,
+        //     intval($_POST[Constants::CHARM_PRICING_OPTION] ?? 0)
+        // );
     }
 }

@@ -3,7 +3,7 @@
 <div class="wrap">
     <form method="POST" action="{{ urls.importProducts }}">
         {{ function('wp_nonce_field', groupName) }}
-        <table class="form-table" role="presentation">
+        <table class="form-table cws5baddi shadow-card" role="presentation">
             <tbody>
                 <tr>
                     <th scope="row">
@@ -22,10 +22,10 @@
                     </th>
                     <td>
                         <select id="cws5baddi_product_description_language" name="product_description_language" aria-describedby="cws5baddi_product_description_language_description">
-                            <option values="Multilanguage" selected>{{ 'Multilanguage'|translate }}</option>
+                            <option values="Multilanguage" {% if values.cws5baddi_product_description_language is empty or values.cws5baddi_product_description_language != 'Multilanguage' %}selected{% endif %}>{{ 'Multilanguage'|translate }}</option>
                             {% for value, label in languages %}
                                 {% if value in values.cws5baddi_supported_product_description_languages %}
-                                    <option value="{{ value }}">{{ label }}</option>
+                                    <option value="{{ value }}" {% if values.cws5baddi_product_description_language == value %}selected{% endif %}>{{ label }}</option>
                                 {% endif %}
                             {% endfor %}
                         </select>
