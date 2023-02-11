@@ -12,6 +12,7 @@
 
 namespace BaddiServices\CodesWholesale\Services\Domains;
 
+use BaddiServices\CodesWholesale\Constants;
 use WC_Product_Simple;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
@@ -85,7 +86,20 @@ class WooCommerceService
             $product->set_sold_individually(true);
         }
 
-        $product->set_regular_price($price['value'] ?? 0);
+        $value = $price['value'] ?? 0;
+        $priceMargin = get_option(Constants::PROFIT_MARGIN_VALUE_OPTION, Constants::DEFAULT_PROFIT_MARGIN_VALUE);
+        $priceMarginType = get_option(Constants::PROFIT_MARGIN_TYPE_OPTION, Constants::DEFAULT_PROFIT_MARGIN_TYPE);
+
+        if ($priceMarginType === Constants::PROFIT_MARGIN_AMOUNT) {
+            $value += $priceMargin;
+        }
+
+        if ($priceMarginType === Constants::PROFIT_MARGIN_PERCENTAGE) {
+            $priceMargin = $value * ($priceMargin / 100);
+            $value += $priceMargin;
+        }
+
+        $product->set_regular_price($value);
     }
 
     private function setCategoriesByName(WC_Product_Simple $product, array $categoriesNames = []): void

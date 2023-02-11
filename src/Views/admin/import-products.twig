@@ -148,11 +148,11 @@
             let products = await response.json();
 
             if (typeof products !== 'undefined' && products.length > 0) {
-                cws5baddiImportProducts(products);
+                await cws5baddiImportProducts(products);
             } else {
                 jQuery('#importing-products-loader').hide();
                 jQuery('.updated').hide();
-                jQuery('#importing-products-output').text(`{{ 'There's no product to import! please try with another criteria...'|translate }}`);
+                jQuery('#importing-products-output').text(`{{ 'There\'s no product to import! please try with another criteria...'|translate }}`);
 
                 setTimeout(() => {
                     window.location.reload();

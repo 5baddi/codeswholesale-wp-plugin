@@ -1,4 +1,28 @@
 {% include 'admin/partials/header.twig' with { isSuccess, message, title: 'Account Details' } %}
+{% if isApiConnected == true and values.cws5baddi_account_details is not empty %}
+<div class="wrap">
+	<table class="form-table" role="presentation" style="background: white; display: inline-table; width: 40%; border-radius: .5rem; box-shadow: 0 0 2px 2px #d0d0d0;">
+		<tbody>
+			<tr>
+				<th scope="row" style="padding: 1rem;">
+					<label>{{ 'Full name'|translate }}</label>
+				</th>
+				<td style="padding: 1rem;">
+					<p>{{ values.cws5baddi_account_details.fullName }}</p>
+				</td>
+			</tr>
+			<tr>
+				<th scope="row" style="padding: 1rem;">
+					<label>{{ 'Balance'|translate }}</label>
+				</th>
+				<td style="padding: 1rem;">
+					<p>€{{ function('number_format', values.cws5baddi_account_details.currentBalance ?? 0, 2, '.', ' ') }}</p>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+{% endif %}
 <div class="wrap">
 	<form method="POST" action="{{ urls.accountSettings }}">
 		{{ function('wp_nonce_field', groupName) }}
