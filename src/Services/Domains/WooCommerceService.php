@@ -33,19 +33,35 @@ class WooCommerceService
             return false;
         }
 
+        $name = sanitize_text_field($attributes['name']);
+
         $product = new WC_Product_Simple();
         $product->set_virtual(true);
-        $product->set_name($attributes['name']);
-        $product->set_slug(Str::slug($attributes['name']));
-        // $product->set_sku($attributes['identifier']);
+        $product->set_name($name);
+        $product->set_slug(Str::lower(Str::slug($name)));
+        $product->set_sku(sanitize_text_field($attributes['identifier']));
 
         if (Arr::has($attributes, 'quantity')) {
+            $product->set_stock_status('instock');
             $product->set_manage_stock(true);
+            $product->set_sold_individually(true);
             $product->set_stock_quantity(intval($attributes['quantity']));
         }
 
-        if (Arr::has($attributes, 'image')) {
-            $attachmentId = WpService::insertImageFromUrlAsAttachment($attributes['image']);
+        if (! empty($attributes['platform'])) {
+            $this->setCategoriesByName($product, [$attributes['platform']]);
+        }
+
+        if (Arr::has($attributes, 'languages') && is_array($attributes['languages'])) {
+            $this->setTagsByName($product, $attributes['languages']);
+        }
+
+        if (Arr::has($attributes, 'regions') && is_array($attributes['regions'])) {
+            $this->setTagsByName($product, $attributes['regions']);
+        }
+
+        if (! empty($attributes['image'])) {
+            $attachmentId = WpService::insertImageFromUrlAsAttachment(sanitize_url($attributes['image']));
 
             if (! empty($attachmentId)) {
                 $product->set_image_id($attachmentId);
@@ -53,5 +69,71 @@ class WooCommerceService
         }
 
         return $product->save();
+    }
+
+    private function setCategoriesByName(WC_Product_Simple $product, array $categoriesNames = []): void
+    {
+        if (empty($categoriesNames)) {
+            return;
+        }
+
+        $categoriesIds = $product->get_tag_ids();
+
+        foreach ($categoriesNames as $categoryName) {
+            $categoryName = sanitize_text_field($categoryName);
+            $categorySlug = Str::lower(Str::slug($categoryName));
+            $category = get_term_by('slug', $categorySlug, 'product_cat');
+
+            if (empty($category)) {
+                $category = wp_insert_term(
+                    $categoryName,
+                    'product_cat',
+                    [
+                        'slug'  => $categorySlug
+                    ]
+                );
+            }
+
+            if (empty($category) || ! property_exists($category, 'term_id')) {
+                continue;
+            }
+
+            $categoriesIds[] = $category->term_id;
+        }
+
+        $product->set_category_ids(array_unique($categoriesIds));
+    }
+
+    private function setTagsByName(WC_Product_Simple $product, array $tagsNames = []): void
+    {
+        if (empty($tagsNames)) {
+            return;
+        }
+
+        $tagsIds = $product->get_tag_ids();
+
+        foreach ($tagsNames as $tagName) {
+            $tagName = sanitize_text_field($tagName);
+            $tagSlug = Str::lower(Str::slug($tagName));
+            $tag = get_term_by('slug', $tagSlug, 'product_tag');
+
+            if (empty($tag)) {
+                $tag = wp_insert_term(
+                    $tagName,
+                    'product_tag',
+                    [
+                        'slug'  => $tagSlug
+                    ]
+                );
+            }
+
+            if (empty($tag) || ! property_exists($tag, 'term_id')) {
+                continue;
+            }
+
+            $tagsIds[] = $tag->term_id;
+        }
+
+        $product->set_tag_ids(array_unique($tagsIds));
     }
 }
