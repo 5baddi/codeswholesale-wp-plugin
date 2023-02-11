@@ -133,7 +133,11 @@
                         }
                     );
 
-                    return Promise.resolve(response.ok());
+                    if (! response.ok) {
+                        return Promise.reject();
+                    }
+
+                    return Promise.resolve();
                 })
             );
 
