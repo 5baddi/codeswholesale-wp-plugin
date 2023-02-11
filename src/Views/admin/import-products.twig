@@ -82,6 +82,44 @@
 
 {% if isImporting == true %}
 <script type="text/javascript">
+    async function cws5baddiImportProducts(products) {
+        await Promise.all(
+            products.map(async (product) => {
+                if (
+                    typeof product.images === 'object'
+                    && typeof product.images.at(-1) !== 'undefined'
+                    && typeof product.images.at(-1)['image'] === 'string'
+                ) {
+                    let response = await fetch(product.images.at(-1)['image']);
+
+                    product.image = response.url;
+                }
+
+                response = await fetch(
+                    `{{ urls.rest ~ namespace }}/products/virtual`,
+                    {
+                        method: 'POST',
+                        headers: {
+                            'X-WP-Nonce': '{{ apiNonce }}',
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(product)
+                    }
+                );
+
+                if (! response.ok) {
+                    return Promise.reject();
+                }
+
+                return Promise.resolve();
+            })
+        );
+
+        setTimeout(() => {
+            window.location.replace('{{ urls.wooProducts }}');
+        }, 1000);
+    }
+
     jQuery(async function () {
         try {
             let body = {
@@ -109,41 +147,19 @@
 
             let products = await response.json();
 
-            await Promise.all(
-                products.map(async (product) => {
-                    if (
-                        typeof product.images === 'object'
-                        && typeof product.images.at(-1) !== 'undefined'
-                        && typeof product.images.at(-1)['image'] === 'string'
-                    ) {
-                        let response = await fetch(product.images.at(-1)['image']);
+            if (typeof products !== 'undefined' && products.length > 0) {
+                cws5baddiImportProducts(products);
+            } else {
+                jQuery('#importing-products-loader').hide();
+                jQuery('.updated').hide();
+                jQuery('#importing-products-output').text(`{{ 'There's no product to import! please try with another criteria...'|translate }}`);
 
-                        product.image = response.url;
-                    }
+                setTimeout(() => {
+                    window.location.reload();
+                }, 3000);
+            }
 
-                    response = await fetch(
-                        `{{ urls.rest ~ namespace }}/products/virtual`,
-                        {
-                            method: 'POST',
-                            headers: {
-                                'X-WP-Nonce': '{{ apiNonce }}',
-                                'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify(product)
-                        }
-                    );
 
-                    if (! response.ok) {
-                        return Promise.reject();
-                    }
-
-                    return Promise.resolve();
-                })
-            );
-
-            setTimeout(() => {
-                window.location.replace('{{ urls.wooProducts }}');
-            }, 1000);
         } catch (e) {
             {% if isDebugMode == true %}
             console.log(e);
