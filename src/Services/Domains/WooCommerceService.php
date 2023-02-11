@@ -41,11 +41,12 @@ class WooCommerceService
         $product->set_slug(Str::lower(Str::slug($name)));
         $product->set_sku(sanitize_text_field($attributes['identifier']));
 
-        if (Arr::has($attributes, 'quantity')) {
-            $product->set_stock_status('instock');
-            $product->set_manage_stock(true);
-            $product->set_sold_individually(true);
-            $product->set_stock_quantity(intval($attributes['quantity']));
+        if (! empty($attributes['quantity'])) {
+            $this->setQuantity($product, $attributes['quantity']);
+        }
+
+        if (Arr::has($attributes, 'prices') && ! empty($attributes['prices'][0])) {
+            $this->setPrice($product, $attributes['prices'][0]);
         }
 
         if (! empty($attributes['platform'])) {
@@ -69,6 +70,22 @@ class WooCommerceService
         }
 
         return $product->save();
+    }
+
+    private function setQuantity(WC_Product_Simple $product, int $quantity): void
+    {
+        $product->set_manage_stock(true);
+        $product->set_stock_quantity(intval($quantity));
+        $product->set_stock_status($quantity > 0 ? 'instock' : 'outofstock');
+    }
+
+    private function setPrice(WC_Product_Simple $product, array $price): void
+    {
+        if (empty($price['from']) || $price['from'] === 1) {
+            $product->set_sold_individually(true);
+        }
+
+        $product->set_regular_price($price['value'] ?? 0);
     }
 
     private function setCategoriesByName(WC_Product_Simple $product, array $categoriesNames = []): void
