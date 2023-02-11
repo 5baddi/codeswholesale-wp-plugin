@@ -124,6 +124,7 @@ trait AdminTrait
                 return;
             }
 
+            $this->saveGeneralSettings();
 
             $data['message'] = cws5baddiTranslation('General settings saved successfully.');
             $data['isSuccess'] = true;

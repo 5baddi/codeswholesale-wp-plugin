@@ -41,7 +41,7 @@ class ImportProductsController extends BaseController
     {
         register_rest_route(
             CodesWholesaleBy5baddi::NAMESPACE,
-            '/products/virtual',
+            '/v1/products/virtual',
             [
                 'methods'             => WP_REST_Server::CREATABLE,
                 'callback'            => [$this, 'storeVirtualProduct'],
@@ -53,7 +53,7 @@ class ImportProductsController extends BaseController
 
         register_rest_route(
             CodesWholesaleBy5baddi::NAMESPACE,
-            '/products/import',
+            '/v1/products/import',
             [
                 'methods'             => WP_REST_Server::CREATABLE,
                 'callback'            => [$this, 'fetchProducts'],

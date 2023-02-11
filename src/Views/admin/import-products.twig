@@ -96,7 +96,7 @@
                 }
 
                 response = await fetch(
-                    `{{ urls.rest ~ namespace }}/products/virtual`,
+                    `{{ urls.rest ~ namespace }}/v1/products/virtual`,
                     {
                         method: 'POST',
                         headers: {
@@ -130,7 +130,7 @@
             };
 
             let response = await fetch(
-                `{{ urls.rest ~ namespace }}/products/import`,
+                `{{ urls.rest ~ namespace }}/v1/products/import`,
                 {
                     method: 'POST',
                     headers: {
