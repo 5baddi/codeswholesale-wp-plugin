@@ -74,7 +74,7 @@
 </div>
 {% else %}
 <div class="wrap" style="background: white; text-align: center;">
-    <img src="{{ 'img/loader.gif'|assets }}" style="width: 35%; object-fit: none;"/>
+    <img id="importing-products-loader" src="{{ 'img/loader.gif'|assets }}" style="width: 35%; object-fit: none;"/>
     <p id="importing-products-output"></p>
 </div>
 {% endif %}
@@ -103,12 +103,38 @@
                 }
             );
 
-            console.log(response.ok);
+            if (! response.ok) {
+                throw new Error();
+            }
+
+            let products = await response.json();
+
+            Promise.all(
+                products.map(async (product) => {
+                    return fetch(
+                        `{{ urls.rest ~ namespace }}/products/virtual`,
+                        {
+                            method: 'POST',
+                            headers: {
+                                'X-WP-Nonce': '{{ apiNonce }}',
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify(product)
+                        }
+                    );
+                })
+            )
+            .then(() => {
+                setTimeout(() => {
+                    window.location.replace('{{ urls.wooProducts }}');
+                }, 1000);
+            });
         } catch (e) {
             {% if isDebugMode == true %}
             console.log(e);
             {% endif %}
 
+            jQuery('#importing-products-loader').hide();
             alert(`{{ 'Something going wrong! please try again or contact support...'|translate }}`);
         }
     });

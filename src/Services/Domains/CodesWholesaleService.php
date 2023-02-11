@@ -12,10 +12,10 @@
 
 namespace BaddiServices\CodesWholesale\Services\Domains;
 
-use BaddiServices\CodesWholesale\Constants;
 use Throwable;
 use GuzzleHttp\Client;
 use Psr\Http\Message\ResponseInterface;
+use BaddiServices\CodesWholesale\Constants;
 
 /**
  * Class CodesWholesaleService.
