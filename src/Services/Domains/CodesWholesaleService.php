@@ -186,6 +186,29 @@ class CodesWholesaleService
         }
     }
 
+    public function getProducts(string $token, array $payload = []): array
+    {
+        try {
+            $response = $this->client->get(
+                self::PRODUCTS_ENDPOINT,
+                [
+                    'headers' => [
+                        'Authorization' => sprintf('Bearer %s', $token)
+                    ],
+                    'query' => $payload
+                ]
+            );
+
+            if ($response->getStatusCode() !== 200) {
+                return [];
+            }
+
+            return $this->fromJson($response);
+        } catch (Throwable $e) {
+            return [];
+        }
+    }
+
     private function fromJson(?ResponseInterface $response = null): ?array
     {
         if (empty($response)) {

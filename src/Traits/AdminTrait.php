@@ -14,6 +14,7 @@ namespace BaddiServices\CodesWholesale\Traits;
 
 use Timber\Timber;
 use BaddiServices\CodesWholesale\Constants;
+use BaddiServices\CodesWholesale\Services\AuthService;
 use BaddiServices\CodesWholesale\CodesWholesaleBy5baddi;
 
 /**
@@ -96,10 +97,7 @@ trait AdminTrait
             $token = get_option(Constants::BEARER_TOKEN_OPTION, '');
             $expiresIn = get_option(Constants::BEARER_TOKEN_EXPIRES_IN_OPTION, 0);
 
-            $now = time();
-            $expiresIn = $now + $expiresIn;
-
-            if (empty($token) || $expiresIn <= $now) {
+            if (empty($token) || AuthService::isTokenExpired($expiresIn)) {
                 $data['message'] = cws5baddiTranslation('API connection failed! please check your API credentials...');
                 $data['isSuccess'] = false;
             } else {
@@ -156,8 +154,12 @@ trait AdminTrait
                 'accountSettings' => admin_url(sprintf('admin.php?page=%s-account-details', CodesWholesaleBy5baddi::SLUG)),
                 'generalSettings' => admin_url(sprintf('admin.php?page=%s', CodesWholesaleBy5baddi::SLUG)),
                 'importProducts'  => admin_url(sprintf('admin.php?page=%s-import-products', CodesWholesaleBy5baddi::SLUG)),
+                'rest'            => get_rest_url(),
             ],
-            'isDebugMode' => (defined('WP_DEBUG') && WP_DEBUG === true)
+            'isDebugMode' => (defined('WP_DEBUG') && WP_DEBUG === true),
+            'apiNonce'    => wp_create_nonce('wp_rest'),
+            'slug'        => CodesWholesaleBy5baddi::SLUG,
+            'namespace'   => CodesWholesaleBy5baddi::NAMESPACE,
         ];
 
         Timber::render($view, array_merge($sharedData, $data));

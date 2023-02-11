@@ -82,9 +82,28 @@
 
 {% if isImporting == true %}
 <script type="text/javascript">
-    jQuery(function () {
+    jQuery(async function () {
         try {
+            let body = {
+                inStockFor: {{ inStockFor }},
+                productDescriptionLanguage: '{{ productDescriptionLanguage }}',
+                region: '{{ region }}',
+                platform: '{{ platform }}',
+            };
 
+            let response = await fetch(
+                `{{ urls.rest ~ namespace }}/products/import`,
+                {
+                    method: 'POST',
+                    headers: {
+                        'X-WP-Nonce': '{{ apiNonce }}',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(body)
+                }
+            );
+
+            console.log(response.ok);
         } catch (e) {
             {% if isDebugMode == true %}
             console.log(e);

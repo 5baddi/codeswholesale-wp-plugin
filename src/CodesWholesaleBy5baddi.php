@@ -13,6 +13,7 @@
 namespace BaddiServices\CodesWholesale;
 
 use Timber\Timber;
+use Illuminate\Support\Str;
 use BaddiServices\CodesWholesale\Traits\AdminTrait;
 use BaddiServices\CodesWholesale\Traits\TimberTrait;
 use BaddiServices\CodesWholesale\Traits\CodesWholesaleTrait;
@@ -31,6 +32,7 @@ class CodesWholesaleBy5baddi
     use AdminTrait, TimberTrait, CodesWholesaleTrait;
 
     public const SLUG = 'codeswholesale-by-5baddi';
+    public const NAMESPACE = 'cws5baddi';
 
     /**
      * @var CodesWholesaleBy5baddi
@@ -62,7 +64,7 @@ class CodesWholesaleBy5baddi
         // Actions
         // Register hooks
         add_action('init', [$this, 'init'], 1);
-        // add_action('rest_api_init', [$this, 'initRestApiRoutes']);
+        add_action('rest_api_init', [$this, 'initRestApiRoutes']);
         add_action('plugins_loaded', [$this, 'pluginsLoaded']);
     }
 
@@ -93,5 +95,27 @@ class CodesWholesaleBy5baddi
         $this->fetchSupportedRegions();
         $this->fetchSupportedTerritories();
         $this->fetchSupportedPlatforms();
+    }
+
+    public function initRestApiRoutes(): void
+    {
+        $controllersPaths = array_merge(
+            glob(sprintf('%ssrc/Controllers/*.php', CWS_5BADDI_PLUGIN_BASEPATH)), 
+            glob(sprintf('%ssrc/Controllers/**/*.php', CWS_5BADDI_PLUGIN_BASEPATH)), 
+            glob(sprintf('%ssrc/Controllers/**/**/*.php', CWS_5BADDI_PLUGIN_BASEPATH))
+        );
+
+        foreach ($controllersPaths as $controllerPath) {
+            $namespace = Str::replace([sprintf('%ssrc/', CWS_5BADDI_PLUGIN_BASEPATH), '.php'], '', $controllerPath);
+            $namespace = Str::replace('/', '\\', $namespace);
+            $namespace = sprintf('%s\\%s', __NAMESPACE__, $namespace);
+
+            if (! class_exists($namespace) || ! method_exists($namespace, 'register_routes')) {
+                continue;
+            }
+
+            $controllerInstance = new $namespace;
+            $controllerInstance->{'register_routes'}();
+        }
     }
 }

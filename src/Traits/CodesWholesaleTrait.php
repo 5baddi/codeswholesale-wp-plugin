@@ -15,6 +15,7 @@ namespace BaddiServices\CodesWholesale\Traits;
 use Illuminate\Support\Arr;
 use BaddiServices\CodesWholesale\Constants;
 use BaddiServices\CodesWholesale\Core\Container;
+use BaddiServices\CodesWholesale\Services\AuthService;
 use BaddiServices\CodesWholesale\Services\Domains\CodesWholesaleService;
 
 /**
@@ -31,14 +32,13 @@ trait CodesWholesaleTrait
     public function authenticate(): void
     {
         $values = $this->settingsValues();
-        $now = time();
-        $expiresIn = $now + ($values[Constants::BEARER_TOKEN_EXPIRES_IN_OPTION] ?? 0);
+        $expiresIn = $values[Constants::BEARER_TOKEN_EXPIRES_IN_OPTION] ?? 0;
 
         if (
             empty($values[Constants::BEARER_TOKEN_OPTION])
             && ! empty($values[Constants::API_CLIENT_ID_OPTION])
             && ! empty($values[Constants::API_CLIENT_SECRET_OPTION])
-            && $expiresIn <= $now
+            || AuthService::isTokenExpired($expiresIn)
         ) {
             $this->createToken();
         }
@@ -47,13 +47,12 @@ trait CodesWholesaleTrait
     public function fetchSupportedProductDescriptionLanguages(): void
     {
         $values = $this->settingsValues();
-        $now = time();
-        $expiresIn = $now + ($values[Constants::BEARER_TOKEN_EXPIRES_IN_OPTION] ?? 0);
+        $expiresIn = $values[Constants::BEARER_TOKEN_EXPIRES_IN_OPTION] ?? 0;
 
         if (
             empty($values[Constants::SUPPORTED_PRODUCT_DESCRIPTION_LANGUAGES_OPTION])
             && ! empty($values[Constants::BEARER_TOKEN_OPTION])
-            && $expiresIn > $now
+            && ! AuthService::isTokenExpired($expiresIn)
         ) {
             /** @var CodesWholesaleService */
             $codesWholesaleService = Container::get(CodesWholesaleService::class);
@@ -75,13 +74,12 @@ trait CodesWholesaleTrait
     public function fetchSupportedRegions(): void
     {
         $values = $this->settingsValues();
-        $now = time();
-        $expiresIn = $now + ($values[Constants::BEARER_TOKEN_EXPIRES_IN_OPTION] ?? 0);
+        $expiresIn = $values[Constants::BEARER_TOKEN_EXPIRES_IN_OPTION] ?? 0;
 
         if (
             empty($values[Constants::SUPPORTED_REGIONS_OPTION])
             && ! empty($values[Constants::BEARER_TOKEN_OPTION])
-            && $expiresIn > $now
+            && ! AuthService::isTokenExpired($expiresIn)
         ) {
             /** @var CodesWholesaleService */
             $codesWholesaleService = Container::get(CodesWholesaleService::class);
@@ -103,13 +101,12 @@ trait CodesWholesaleTrait
     public function fetchSupportedTerritories(): void
     {
         $values = $this->settingsValues();
-        $now = time();
-        $expiresIn = $now + ($values[Constants::BEARER_TOKEN_EXPIRES_IN_OPTION] ?? 0);
+        $expiresIn = $values[Constants::BEARER_TOKEN_EXPIRES_IN_OPTION] ?? 0;
 
         if (
             empty($values[Constants::SUPPORTED_TERRITORIES_OPTION])
             && ! empty($values[Constants::BEARER_TOKEN_OPTION])
-            && $expiresIn > $now
+            && ! AuthService::isTokenExpired($expiresIn)
         ) {
             /** @var CodesWholesaleService */
             $codesWholesaleService = Container::get(CodesWholesaleService::class);
@@ -131,13 +128,12 @@ trait CodesWholesaleTrait
     public function fetchSupportedPlatforms(): void
     {
         $values = $this->settingsValues();
-        $now = time();
-        $expiresIn = $now + ($values[Constants::BEARER_TOKEN_EXPIRES_IN_OPTION] ?? 0);
+        $expiresIn = $values[Constants::BEARER_TOKEN_EXPIRES_IN_OPTION] ?? 0;
 
         if (
             empty($values[Constants::SUPPORTED_PLATFORMS_OPTION])
             && ! empty($values[Constants::BEARER_TOKEN_OPTION])
-            && $expiresIn > $now
+            && ! AuthService::isTokenExpired($expiresIn)
         ) {
             /** @var CodesWholesaleService */
             $codesWholesaleService = Container::get(CodesWholesaleService::class);
