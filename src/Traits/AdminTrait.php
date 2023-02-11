@@ -243,7 +243,7 @@ trait AdminTrait
             sanitize_text_field($_POST[Constants::API_CLIENT_SIGNATURE_OPTION] ?? '')
         );
 
-        $this->createToken();
+        AuthService::createCodesWholesaleToken();
     }
 
     private function saveGeneralSettings(): void

@@ -22,6 +22,7 @@ use BaddiServices\CodesWholesale\Core\Container;
 use BaddiServices\CodesWholesale\Core\BaseController;
 use BaddiServices\CodesWholesale\Services\AuthService;
 use BaddiServices\CodesWholesale\CodesWholesaleBy5baddi;
+use BaddiServices\CodesWholesale\Exceptions\UnauthorizedException;
 use BaddiServices\CodesWholesale\Services\Domains\WooCommerceService;
 use BaddiServices\CodesWholesale\Services\Domains\CodesWholesaleService;
 
@@ -146,7 +147,13 @@ class ImportProductsController extends BaseController
 
             set_time_limit(600);
 
-            $products = $codesWholesaleService->getProducts($token, $payload);
+            try {
+                $products = $codesWholesaleService->getProducts($token, $payload);
+            } catch (UnauthorizedException $e) {
+                AuthService::createCodesWholesaleToken();
+
+                $products = $codesWholesaleService->getProducts($token, $payload);
+            }
 
             return new WP_HTTP_Response($products['items'] ?? []);
         } catch (Throwable $e) {

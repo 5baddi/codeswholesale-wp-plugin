@@ -16,6 +16,7 @@ use Throwable;
 use GuzzleHttp\Client;
 use Psr\Http\Message\ResponseInterface;
 use BaddiServices\CodesWholesale\Constants;
+use BaddiServices\CodesWholesale\Exceptions\UnauthorizedException;
 
 /**
  * Class CodesWholesaleService.
@@ -205,6 +206,10 @@ class CodesWholesaleService
 
             return $this->fromJson($response);
         } catch (Throwable $e) {
+            if ($e->getCode() === 401) {
+                throw new UnauthorizedException();
+            }
+
             return [];
         }
     }

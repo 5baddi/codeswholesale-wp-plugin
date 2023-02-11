@@ -75,7 +75,7 @@
 {% else %}
 <div class="wrap" style="background: white; text-align: center;">
     <img id="importing-products-loader" src="{{ 'img/loader.gif'|assets }}" style="width: 35%; object-fit: none;"/>
-    <p id="importing-products-output"></p>
+    <p id="importing-products-output" style="padding: 1rem; font-size: 14pt;"></p>
 </div>
 {% endif %}
 {% include 'admin/partials/footer.twig' with { isApiConnected } %}
@@ -109,9 +109,19 @@
 
             let products = await response.json();
 
-            Promise.all(
+            await Promise.all(
                 products.map(async (product) => {
-                    return fetch(
+                    if (
+                        typeof product.images === 'object'
+                        && typeof product.images.at(-1) !== 'undefined'
+                        && typeof product.images.at(-1)['image'] === 'string'
+                    ) {
+                        let response = await fetch(product.images.at(-1)['image']);
+
+                        product.image = response.url;
+                    }
+
+                    response = await fetch(
                         `{{ urls.rest ~ namespace }}/products/virtual`,
                         {
                             method: 'POST',
@@ -122,20 +132,22 @@
                             body: JSON.stringify(product)
                         }
                     );
+
+                    return Promise.resolve(response.ok());
                 })
-            )
-            .then(() => {
-                setTimeout(() => {
-                    window.location.replace('{{ urls.wooProducts }}');
-                }, 1000);
-            });
+            );
+
+            setTimeout(() => {
+                window.location.replace('{{ urls.wooProducts }}');
+            }, 1000);
         } catch (e) {
             {% if isDebugMode == true %}
             console.log(e);
             {% endif %}
 
             jQuery('#importing-products-loader').hide();
-            alert(`{{ 'Something going wrong! please try again or contact support...'|translate }}`);
+            jQuery('.updated').hide();
+            jQuery('#importing-products-output').text(`{{ 'Something going wrong! please try again or contact support...'|translate }}`);
         }
     });
 </script>
