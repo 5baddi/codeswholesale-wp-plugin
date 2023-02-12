@@ -40,6 +40,11 @@ class AuthService
     {
         $apiClientId = get_option(Constants::API_CLIENT_ID_OPTION, '');
         $apiClientSecret = get_option(Constants::API_CLIENT_SECRET_OPTION, '');
+        $apiMode = get_option(Constants::API_MODE_OPTION, Constants::API_SANDBOX_MODE);
+
+        if ($apiMode === Constants::API_SANDBOX_MODE) {
+            return;
+        }
 
         if (
             empty($apiClientId)
@@ -71,5 +76,27 @@ class AuthService
             update_option(Constants::BEARER_TOKEN_OPTION, '');
             update_option(Constants::BEARER_TOKEN_EXPIRES_IN_OPTION, 0);
         }
+    }
+
+    public static function verifyWebhookSignature(): bool
+    {
+        $body = json_decode(@file_get_contents('php://input') ?? '{}', true);
+        if (empty($body['authHash']) || empty($body['type'])) {
+            return false;
+        }
+
+        if (! in_array($body['type'], CodesWholesaleService::SUPPORTED_WEBHOOK_EVENTS)) {
+            return false;
+        }
+
+        $clientId = get_option(Constants::API_CLIENT_ID_OPTION, '');
+        $clientSignature = get_option(Constants::API_CLIENT_SIGNATURE_OPTION, '');
+        if (empty($clientId) || empty($clientSignature)) {
+            return false;
+        }
+
+        $authHash = hash('sha256', sprintf('%s%s', $clientId, $clientSignature));
+
+        return $authHash === $body['authHash'];
     }
 }

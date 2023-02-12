@@ -41,7 +41,7 @@ const paths = {
         }
     },
     js: {
-        src: './resources/js/*.js',
+        src: './resources/js/**/*.js',
         dest: './assets/js',
     }
 };

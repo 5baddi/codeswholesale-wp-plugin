@@ -138,7 +138,7 @@ class CodesWholesaleBy5baddi
             wp_enqueue_script(
                 sprintf('%s_%s', self::NAMESPACE, basename($adminScript)),
                 sprintf('%s%s', CWS_5BADDI_PLUGIN_ASSETS_URL, Str::replace(CWS_5BADDI_PLUGIN_ASSETS_PATH, '', $adminScript)),
-                ['jQuery'],
+                [],
                 CWS_5BADDI_PLUGIN_ASSETS_VERSION
             );
         }

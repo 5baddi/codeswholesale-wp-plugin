@@ -12,10 +12,10 @@
 
 namespace BaddiServices\CodesWholesale\Services\Domains;
 
-use BaddiServices\CodesWholesale\Constants;
 use WC_Product_Simple;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
+use BaddiServices\CodesWholesale\Constants;
 
 /**
  * Class WooCommerceService.
@@ -30,17 +30,28 @@ class WooCommerceService
 {
     public function saveVirtualProduct(array $attributes): bool
     {
-        if (! class_exists('WC_Product_Download')) {
+        if (! class_exists('WC_Product_Simple')) {
             return false;
         }
 
         $name = sanitize_text_field($attributes['name']);
-
         $product = new WC_Product_Simple();
+        $existsProduct = null;
+
+        $productId = wc_get_product_id_by_sku($attributes['identifier']);
+        if (! empty($productId)) {
+            $existsProduct = wc_get_product($productId);
+        }
+
+        if ($existsProduct instanceof WC_Product_Simple) {
+            $product = $existsProduct;
+        }
+
         $product->set_virtual(true);
         $product->set_name($name);
         $product->set_slug(Str::lower(Str::slug($name)));
         $product->set_sku(sanitize_text_field($attributes['identifier']));
+        $product->add_meta_data('uuid', sanitize_text_field($attributes['productId']));
 
         if (! empty($attributes['quantity'])) {
             $this->setQuantity($product, $attributes['quantity']);
@@ -71,6 +82,15 @@ class WooCommerceService
         }
 
         return $product->save();
+    }
+
+    public function hideVirtualProduct(string $productId): bool
+    {
+        if (! class_exists('WC_Product_Simple')) {
+            return false;
+        }
+
+        return wp_update_post(['ID' => $productId, 'post_status' => 'pending']);
     }
 
     private function setQuantity(WC_Product_Simple $product, int $quantity): void

@@ -12,10 +12,14 @@
 
 namespace BaddiServices\CodesWholesale\Traits;
 
+use Throwable;
 use Timber\Timber;
 use BaddiServices\CodesWholesale\Constants;
+use BaddiServices\CodesWholesale\Core\Container;
 use BaddiServices\CodesWholesale\Services\AuthService;
 use BaddiServices\CodesWholesale\CodesWholesaleBy5baddi;
+use BaddiServices\CodesWholesale\Exceptions\UnauthorizedException;
+use BaddiServices\CodesWholesale\Services\Domains\CodesWholesaleService;
 
 /**
  * Trait AdminTrait.
@@ -65,6 +69,15 @@ trait AdminTrait
             sprintf('%s-import-products', CodesWholesaleBy5baddi::SLUG),
             [$this, 'renderImportProductsPage']
         );
+
+        add_submenu_page(
+            sprintf('%s-account-details', CodesWholesaleBy5baddi::SLUG),
+            cws5baddiTranslation('Webhook endpoint'),
+            cws5baddiTranslation('Webhook endpoint'),
+            'publish_posts',
+            sprintf('%s-webhook', CodesWholesaleBy5baddi::SLUG),
+            [$this, 'renderWebhookPage']
+        );
     }
 
     public function registerSettingsPageOptions(): void
@@ -90,6 +103,25 @@ trait AdminTrait
     public function renderAccountDetailsPage(): void
     {
         $data = [];
+        $accountDetails = [];
+        $token = get_option(Constants::BEARER_TOKEN_OPTION, '');
+        $lastUpdate = intval(get_option(Constants::LAST_ACCOUNT_DETAILS_UPDATE_OPTION, 0));
+
+        if (! empty($token) || $lastUpdate < strtotime('+15 minutes', time())) {
+            try {
+                /** @var CodesWholesaleService */
+                $codesWholesaleService = Container::get(CodesWholesaleService::class);
+    
+                $accountDetails = $codesWholesaleService->getAccountDetails($token);
+
+                update_option(Constants::BEARER_TOKEN_OPTION, json_encode($accountDetails ?? '{}'));
+                update_option(Constants::LAST_ACCOUNT_DETAILS_UPDATE_OPTION, time());
+            } catch (Throwable $e) {
+                if ($e instanceof UnauthorizedException) {
+                    AuthService::createCodesWholesaleToken();
+                }
+            }
+        }
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && check_admin_referer($this->getGroupName())) {
             $this->saveAccountDetails();
@@ -149,6 +181,13 @@ trait AdminTrait
         }
 
         $this->render('admin/import-products.twig', $data);
+    }
+
+    public function renderWebhookPage(): void
+    {
+        $data = [];
+
+        $this->render('admin/webhook.twig', $data);
     }
 
     public function render(string $view, array $data = []): void
@@ -228,6 +267,8 @@ trait AdminTrait
             => json_decode(get_option(Constants::SUPPORTED_PLATFORMS_OPTION, '[]'), true),
             Constants::ACCOUNT_DETAILS_OPTION
             => json_decode(get_option(Constants::ACCOUNT_DETAILS_OPTION, '[]'), true),
+            Constants::API_MODE_OPTION
+            => get_option(Constants::API_MODE_OPTION, Constants::API_SANDBOX_MODE),
         ];
     }
 
@@ -238,6 +279,17 @@ trait AdminTrait
 
     private function saveAccountDetails(): void
     {
+        update_option(
+            Constants::API_MODE_OPTION,
+            sanitize_text_field($_POST[Constants::API_MODE_OPTION] ?? Constants::API_SANDBOX_MODE)
+        );
+
+        if ($_POST[Constants::API_MODE_OPTION] === Constants::API_SANDBOX_MODE) {
+            $_POST[Constants::API_CLIENT_ID_OPTION] = CodesWholesaleService::SANDBOX_CLIENT_ID;
+            $_POST[Constants::API_CLIENT_SECRET_OPTION] = CodesWholesaleService::SANDBOX_CLIENT_SECRET;
+            $_POST[Constants::API_CLIENT_SIGNATURE_OPTION] = '';
+        }
+
         update_option(
             Constants::API_CLIENT_ID_OPTION,
             sanitize_text_field($_POST[Constants::API_CLIENT_ID_OPTION] ?? '')

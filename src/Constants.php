@@ -46,9 +46,14 @@ class Constants
     public const SUPPORTED_TERRITORIES_OPTION = 'cws5baddi_supported_territories';
     public const SUPPORTED_PLATFORMS_OPTION = 'cws5baddi_supported_platforms';
     public const ACCOUNT_DETAILS_OPTION = 'cws5baddi_account_details';
+    public const LAST_ACCOUNT_DETAILS_UPDATE_OPTION = 'cws5baddi_last_account_details_update';
+    public const API_MODE_OPTION = 'cws5baddi_api_mode';
 
     public const PROFIT_MARGIN_AMOUNT = 1;
     public const PROFIT_MARGIN_PERCENTAGE = 2;
+
+    public const API_SANDBOX_MODE = 'sandbox';
+    public const API_LIVE_MODE = 'live';
 
     // Default values
     public const DEFAULT_PROFIT_MARGIN_VALUE = 5;

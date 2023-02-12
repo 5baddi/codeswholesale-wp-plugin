@@ -30,6 +30,21 @@
 			<tbody>
 				<tr>
 					<th scope="row">
+						<label for="cws5baddi_api_mode">{{ 'API mode'|translate }}</label>
+					</th>
+					<td>
+						<label for="cws5baddi_api_mode">
+							<input name="cws5baddi_api_mode" type="radio" id="cws5baddi_api_mode" value="sandbox" {% if not values.cws5baddi_api_mode or values.cws5baddi_api_mode == 'sandbox' %} checked {% endif %}/>
+							{{ 'Sandbox'|translate }}
+						</label>
+						<label for="cws5baddi_profit_margin_type" style="margin-left: 2rem;">
+							<input name="cws5baddi_api_mode" type="radio" id="cws5baddi_api_mode" value="live" {% if values.cws5baddi_api_mode == 'live' %} checked {% endif %}/>
+							{{ 'Live'|translate }}
+						</label>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">
 						<label for="cws5baddi_api_client_id">{{ 'API client ID'|translate }}</label>
 					</th>
 					<td>
