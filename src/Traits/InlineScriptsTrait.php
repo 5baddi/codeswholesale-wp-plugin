@@ -13,6 +13,7 @@
 namespace BaddiServices\CodesWholesale\Traits;
 
 use WP_Post;
+use Illuminate\Support\Str;
 use BaddiServices\CodesWholesale\Constants;
 use BaddiServices\CodesWholesale\CodesWholesaleBy5baddi;
 
@@ -56,6 +57,7 @@ trait InlineScriptsTrait
                     ajaxUrl: '%s',
                     apiNonce: '%s',
                     isAdminPage: %s,
+                    translations: %s,
                     %s
                 };%s
             ",
@@ -69,6 +71,7 @@ trait InlineScriptsTrait
             strtok(admin_url('admin-ajax.php'), '?'),
             wp_create_nonce('wp_rest'),
             is_admin() ? 'true' : 'false',
+            json_encode(Constants::translations()),
             $this->prepareSharedData(),
             PHP_EOL
         );
@@ -130,6 +133,10 @@ trait InlineScriptsTrait
             $key = $this->parseKey($key);
             $preparedValue = '';
 
+            if (Str::startsWith($key, '.')) {
+                $key = substr($key, 1, -1);
+            }
+
             if (is_object($item) || is_array($item)) {
                 $preparedValue = json_encode($item);
             }
@@ -160,7 +167,7 @@ trait InlineScriptsTrait
 
     private function parseKey(string $key): string
     {
-        $key = preg_replace('/[^a-zA-Z0-9]+/', '', $key);
+        $key = preg_replace('/[^a-zA-Z0-9\.\_]+/', '', $key);
 
         if (is_int(substr($key, 0, 1))) {
             $key = substr($key, 1, -1);

@@ -439,4 +439,11 @@ class Constants
             'namespace'   => CodesWholesaleBy5baddi::NAMESPACE,
         ];
     }
+
+    public static function translations(): array
+    {
+        return [
+            'error' => cws5baddiTranslation('Something going wrong! please try again or contact support...'),
+        ];
+    }
 }

@@ -180,6 +180,7 @@ trait AdminTrait
             $data['message'] = cws5baddiTranslation('Start importing products...');
             $data['isSuccess'] = true;
             $data['isImporting'] = true;
+            $data['translations.no_product_to_import'] = cws5baddiTranslation('There\'s no product to import! please try with another criteria...');
 
             ScriptEnqueuer::load(sprintf('%sjs/admin/import-products/main.js', CWS_5BADDI_PLUGIN_ASSETS_PATH))
                 ->loadInFooter()

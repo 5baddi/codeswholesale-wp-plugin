@@ -21,52 +21,52 @@ async function cws5baddiImportProducts(products) {
 }
 
 jQuery(async function () {
-    // try {
-    //     let body = {
-    //         inStockFor: {{ inStockFor }},
-    //         productDescriptionLanguage: '{{ productDescriptionLanguage }}',
-    //         region: '{{ region }}',
-    //         platform: '{{ platform }}',
-    //     };
+    try {
+        let body = {
+            inStockFor: cws5Baddi.inStockFor,
+            productDescriptionLanguage: cws5Baddi.productDescriptionLanguage,
+            region: cws5Baddi.region,
+            platform: cws5Baddi.platform,
+        };
 
-    //     let response = await fetch(
-    //         `{{ urls.rest ~ namespace }}/v1/products/import`,
-    //         {
-    //             method: 'POST',
-    //             headers: {
-    //                 'X-WP-Nonce': '{{ apiNonce }}',
-    //                 'Content-Type': 'application/json',
-    //             },
-    //             body: JSON.stringify(body)
-    //         }
-    //     );
+        let response = await fetch(
+            `${cws5Baddi.urls.rest}${cws5Baddi.namespace}/v1/products/import`,
+            {
+                method: 'POST',
+                headers: {
+                    'X-WP-Nonce': cws5Baddi.apiNonce,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(body)
+            }
+        );
 
-    //     if (! response.ok) {
-    //         throw new Error();
-    //     }
+        if (! response.ok) {
+            throw new Error();
+        }
 
-    //     let products = await response.json();
+        let products = await response.json();
 
-    //     if (typeof products !== 'undefined' && products.length > 0) {
-    //         await cws5baddiImportProducts(products);
-    //     } else {
-    //         jQuery('#importing-products-loader').hide();
-    //         jQuery('.updated').hide();
-    //         jQuery('#importing-products-output').text(`{{ 'There\'s no product to import! please try with another criteria...'|translate }}`);
+        if (typeof products !== 'undefined' && products.length > 0) {
+            await cws5baddiImportProducts(products);
+        } else {
+            jQuery('#importing-products-loader').hide();
+            jQuery('.updated').hide();
+            jQuery('#importing-products-output').text(cws5Baddi.translations.no_product_to_import || '');
 
-    //         setTimeout(() => {
-    //             window.location.reload();
-    //         }, 3000);
-    //     }
+            setTimeout(() => {
+                window.location.reload();
+            }, 3000);
+        }
 
 
-    // } catch (e) {
-    //     {% if isDebugMode == true %}
-    //     console.log(e);
-    //     {% endif %}
+    } catch (e) {
+        if (cws5Baddi.isDebugMode) {
+            console.log(e);
+        }
 
-    //     jQuery('#importing-products-loader').hide();
-    //     jQuery('.updated').hide();
-    //     jQuery('#importing-products-output').text(`{{ 'Something going wrong! please try again or contact support...'|translate }}`);
-    // }
+        jQuery('#importing-products-loader').hide();
+        jQuery('.updated').hide();
+        jQuery('#importing-products-output').text(cws5Baddi.translations.error || '');
+    }
 });
