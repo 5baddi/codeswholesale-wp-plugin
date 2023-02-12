@@ -28,6 +28,23 @@ use BaddiServices\CodesWholesale\Constants;
  */
 class WooCommerceService
 {
+    public static function calculatePriceWithProfit(float $price): float
+    {
+        $priceMargin = get_option(Constants::PROFIT_MARGIN_VALUE_OPTION, Constants::DEFAULT_PROFIT_MARGIN_VALUE);
+        $priceMarginType = intval(get_option(Constants::PROFIT_MARGIN_TYPE_OPTION, Constants::DEFAULT_PROFIT_MARGIN_TYPE));
+
+        if ($priceMarginType === Constants::PROFIT_MARGIN_AMOUNT) {
+            $price += $priceMargin;
+        }
+
+        if ($priceMarginType === Constants::PROFIT_MARGIN_PERCENTAGE) {
+            $priceMargin = $price * ($priceMargin / 100);
+            $price += $priceMargin;
+        }
+
+        return $price;
+    }
+
     public function saveVirtualProduct(array $attributes): bool
     {
         if (! class_exists('WC_Product_Simple')) {
@@ -51,7 +68,7 @@ class WooCommerceService
         $product->set_name($name);
         $product->set_slug(Str::lower(Str::slug($name)));
         $product->set_sku(sanitize_text_field($attributes['identifier']));
-        $product->add_meta_data('cws_product_uuid', sanitize_text_field($attributes['productId']));
+        $product->add_meta_data('cws_product_uuid', sanitize_text_field($attributes['productId']), true);
 
         if (! empty($attributes['quantity'])) {
             $this->setQuantity($product, $attributes['quantity']);
@@ -114,20 +131,10 @@ class WooCommerceService
             $product->set_sold_individually(true);
         }
 
-        $value = $price['value'] ?? 0;
-        $priceMargin = get_option(Constants::PROFIT_MARGIN_VALUE_OPTION, Constants::DEFAULT_PROFIT_MARGIN_VALUE);
-        $priceMarginType = intval(get_option(Constants::PROFIT_MARGIN_TYPE_OPTION, Constants::DEFAULT_PROFIT_MARGIN_TYPE));
+        $price = $price['value'] ?? 0;
+        $price = self::calculatePriceWithProfit($price);
 
-        if ($priceMarginType === Constants::PROFIT_MARGIN_AMOUNT) {
-            $value += $priceMargin;
-        }
-
-        if ($priceMarginType === Constants::PROFIT_MARGIN_PERCENTAGE) {
-            $priceMargin = $value * ($priceMargin / 100);
-            $value += $priceMargin;
-        }
-
-        $product->set_regular_price($value);
+        $product->set_regular_price($price);
     }
 
     private function setCategoriesByName(WC_Product_Simple $product, array $categoriesNames = []): void

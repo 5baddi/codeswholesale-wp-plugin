@@ -244,7 +244,7 @@ class CodesWholesaleService
     {
         try {
             $response = $this->client->get(
-                Str::replace('{productId}', $productId, self::PRODUCTS_ENDPOINT),
+                Str::replace('{productId}', $productId, self::PRODUCT_ENDPOINT),
                 [
                     'headers' => [
                         'Authorization' => sprintf('Bearer %s', $token)

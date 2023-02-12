@@ -16,6 +16,7 @@ use Timber\Timber;
 use Illuminate\Support\Str;
 use BaddiServices\CodesWholesale\Traits\AdminTrait;
 use BaddiServices\CodesWholesale\Traits\TimberTrait;
+use BaddiServices\CodesWholesale\Traits\ProductTrait;
 use BaddiServices\CodesWholesale\Traits\CodesWholesaleTrait;
 
 /**
@@ -29,7 +30,7 @@ use BaddiServices\CodesWholesale\Traits\CodesWholesaleTrait;
  */
 class CodesWholesaleBy5baddi
 {
-    use AdminTrait, TimberTrait, CodesWholesaleTrait;
+    use AdminTrait, TimberTrait, CodesWholesaleTrait, ProductTrait;
 
     public const SLUG = 'codeswholesale-by-5baddi';
     public const NAMESPACE = 'cws5baddi';
@@ -77,12 +78,16 @@ class CodesWholesaleBy5baddi
 
     public function init(): void
     {
+        // Actions
         // Register custom settings page
         if (is_admin()) {
             add_action('admin_menu', [$this, 'registerSettingsPage']);
             add_action('admin_init', [$this, 'registerSettingsPageOptions']);
             add_action('admin_enqueue_scripts', [$this, 'registerAdminStylesAndScripts']);
         }
+
+        // Post filter
+        add_action('the_post', [$this, 'doubleCheckProductPrice'], 1);
 
         // Filters
         // Timber twig filter
