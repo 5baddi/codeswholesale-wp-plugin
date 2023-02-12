@@ -85,6 +85,7 @@ class WebhookController extends BaseController
                     break;
                 case CodesWholesaleService::PRODUCT_HIDDEN_WEBHOOK_EVENT:
                     $this->hideVirtualProduct($body['productId']);
+                    break;
                 default:
                     $this->saveVirtualProduct($body['productId']);
                     break;
