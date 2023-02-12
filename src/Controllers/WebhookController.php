@@ -78,20 +78,15 @@ class WebhookController extends BaseController
 
             switch ($body['type']) {
                 case CodesWholesaleService::STOCK_WEBHOOK_EVENT:
-
+                    $this->updateVirtualProductQuantity($body['productId'], intval($body['quantity']));
                     break;
                 case CodesWholesaleService::PREORDER_WEBHOOK_EVENT:
-
+                    // TODO:
                     break;
                 case CodesWholesaleService::PRODUCT_HIDDEN_WEBHOOK_EVENT:
-                    if (! empty($body['productId'])) {
-                        $this->wooCommerceService->hideVirtualProduct($body['productId']);
-                    }
-                    break;
+                    $this->hideVirtualProduct($body['productId']);
                 default:
-                    if (! empty($body['productId'])) {
-                        $this->saveVirtualProduct($body['productId']);
-                    }
+                    $this->saveVirtualProduct($body['productId']);
                     break;
             }
 
@@ -108,11 +103,35 @@ class WebhookController extends BaseController
         }
     }
 
+    private function hideVirtualProduct(string $productId): void
+    {
+        $hideProductEnabled = boolval(get_option(Constants::HIDE_PRODUCTS_OPTION, false));
+        if (! $hideProductEnabled) {
+            return;
+        }
+
+        $this->wooCommerceService->hideVirtualProduct($productId);
+    }
+
+    private function updateVirtualProductQuantity(string $productId, int $quantity): void
+    {
+        $product = $this->codesWholesaleService->getProduct($this->token, $productId);
+        if (empty($product)) {
+            $this->hideVirtualProduct($productId);
+
+            return;
+        }
+
+        $product['quantity'] = $quantity;
+
+        $this->wooCommerceService->saveVirtualProduct($product);
+    }
+
     private function saveVirtualProduct(string $productId): void
     {
         $product = $this->codesWholesaleService->getProduct($this->token, $productId);
         if (empty($product)) {
-            $this->wooCommerceService->hideVirtualProduct($productId);
+            $this->hideVirtualProduct($productId);
 
             return;
         }
