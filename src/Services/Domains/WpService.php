@@ -12,7 +12,8 @@
 
 namespace BaddiServices\CodesWholesale\Services\Domains;
 
-use Illuminate\Support\Str;
+use GuzzleHttp\Client;
+use GuzzleHttp\RedirectMiddleware;
 
 /**
  * Class WpService.
@@ -32,6 +33,18 @@ class WpService
     {
         if (! defined('ABSPATH')) {
             return false;
+        }
+
+        if (! class_exists('WP_Http')) {
+            require_once(sprintf('%swp-admin/includes/class-http.php', ABSPATH));
+        }
+
+        $client = new Client(['allow_redirects' => ['track_redirects' => true]]);
+        $response = $client->get($url);
+        $headersRedirect = $response->getHeader(RedirectMiddleware::HISTORY_HEADER);
+
+        if (! empty($headersRedirect[0])) {
+            $url = $headersRedirect[0];
         }
 
         require_once(sprintf('%swp-admin/includes/file.php', ABSPATH));

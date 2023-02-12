@@ -91,11 +91,11 @@ class WooCommerceService
             $this->setTagsByName($product, $attributes['regions']);
         }
 
-        if (! empty($attributes['image'])) {
+        if (! empty($attributes['images']) && ! empty(last($attributes['images'])) && Arr::has(last($attributes['images']), 'image')) {
             $attachmentId = null;
 
             try {
-                $attachmentId = WpService::insertImageFromUrlAsAttachment(sanitize_url($attributes['image']));
+                $attachmentId = WpService::insertImageFromUrlAsAttachment(sanitize_url(last($attributes['images'])['image']));
             } catch (Throwable $e) {}
 
             if (! empty($attachmentId)) {

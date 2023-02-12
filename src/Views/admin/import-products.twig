@@ -85,16 +85,6 @@
     async function cws5baddiImportProducts(products) {
         await Promise.all(
             products.map(async (product) => {
-                if (
-                    typeof product.images === 'object'
-                    && typeof product.images.at(-1) !== 'undefined'
-                    && typeof product.images.at(-1)['image'] === 'string'
-                ) {
-                    let response = await fetch(product.images.at(-1)['image']);
-
-                    product.image = response.url;
-                }
-
                 response = await fetch(
                     `{{ urls.rest ~ namespace }}/v1/products/virtual`,
                     {
@@ -106,6 +96,8 @@
                         body: JSON.stringify(product)
                     }
                 );
+
+                setTimeout(() => {}, 3000);
 
                 return Promise.resolve();
             })
