@@ -12,6 +12,7 @@
 
 namespace BaddiServices\CodesWholesale\Services\Domains;
 
+use Throwable;
 use WC_Product_Simple;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
@@ -91,7 +92,11 @@ class WooCommerceService
         }
 
         if (! empty($attributes['image'])) {
-            $attachmentId = WpService::insertImageFromUrlAsAttachment(sanitize_url($attributes['image']));
+            $attachmentId = null;
+
+            try {
+                $attachmentId = WpService::insertImageFromUrlAsAttachment(sanitize_url($attributes['image']));
+            } catch (Throwable $e) {}
 
             if (! empty($attachmentId)) {
                 $product->set_image_id($attachmentId);
