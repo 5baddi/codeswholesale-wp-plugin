@@ -35,6 +35,13 @@ trait ProductTrait
 {
     public function doubleCheckProductPrice(WP_Post $post): WP_Post
     {
+        if (! is_singular('product')) {
+            // Prevent infinite loop
+            remove_action('the_post', [$this, 'doubleCheckProductPrice'], 1);
+
+            return $post;
+        }
+
         try {
             $product = null;
             $cwsProductId = null;
@@ -42,7 +49,7 @@ trait ProductTrait
             $doubleCheckPriceEnabled = boolval(get_option(Constants::DOUBLE_CHECK_PRICE_OPTION, 0));
             $token = get_option(Constants::BEARER_TOKEN_OPTION, '');
 
-            if ($doubleCheckPriceEnabled && ! empty($token) && $post->post_type === 'product') {
+            if ($doubleCheckPriceEnabled && ! empty($token)) {
                 $product = wc_get_product($post->ID);
             }
 
@@ -63,8 +70,7 @@ trait ProductTrait
 
                 if ($currentPrice < $newPrice) {
                     $product->set_regular_price($newPrice);
-
-                    wp_redirect(get_permalink($post->ID));
+                    $product->save();
                 }
             }
         } catch (Throwable $e) {
