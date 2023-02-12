@@ -86,23 +86,7 @@ trait InlineScriptsTrait
 
         foreach ($data as $key => $item) {
             $key = $this->parseKey($key);
-            $preparedValue = '';
-
-            if (is_object($item) || is_array($item)) {
-                $preparedValue = json_encode($item);
-            }
-
-            if (is_numeric($item)) {
-                $preparedValue = $item;
-            }
-
-            if (is_bool($item)) {
-                $preparedValue = $item ? 'true' : 'false';
-            }
-
-            if (is_string($item)) {
-                $preparedValue = sprintf("'%s'", addcslashes($item, "'"));
-            }
+            $parsedValue = $this->parseValue($item);
 
             $values = sprintf(
                 "
@@ -116,7 +100,7 @@ trait InlineScriptsTrait
                 ",
                 $values,
                 $key,
-                $preparedValue,
+                $parsedValue,
                 PHP_EOL
             );
         }
@@ -131,26 +115,10 @@ trait InlineScriptsTrait
 
         foreach ($sharedData as $key => $item) {
             $key = $this->parseKey($key);
-            $preparedValue = '';
+            $parsedValue = $this->parseValue($item);
 
             if (Str::startsWith($key, '.')) {
                 $key = substr($key, 1, -1);
-            }
-
-            if (is_object($item) || is_array($item)) {
-                $preparedValue = json_encode($item);
-            }
-
-            if (is_numeric($item)) {
-                $preparedValue = $item;
-            }
-
-            if (is_bool($item)) {
-                $preparedValue = $item ? 'true' : 'false';
-            }
-
-            if (is_string($item)) {
-                $preparedValue = sprintf("'%s'", addcslashes($item, "'"));
             }
 
             $values = sprintf(
@@ -158,11 +126,34 @@ trait InlineScriptsTrait
                 $values,
                 ! empty($values) ? ',' : '',
                 PHP_EOL,
-                sprintf('%s: %s', $key, $preparedValue)
+                sprintf('%s: %s', $key, $parsedValue)
             );
         }
 
         return $values;
+    }
+
+    private function parseValue($value)
+    {
+        $parsedValue = '';
+
+        if (is_object($value) || is_array($value)) {
+            $parsedValue = json_encode($value);
+        }
+
+        if (is_numeric($value)) {
+            $parsedValue = $value;
+        }
+
+        if (is_bool($value)) {
+            $parsedValue = $value ? 'true' : 'false';
+        }
+
+        if (is_string($value)) {
+            $parsedValue = sprintf("'%s'", addcslashes($value, "'"));
+        }
+
+        return $parsedValue;
     }
 
     private function parseKey(string $key): string
