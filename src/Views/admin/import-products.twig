@@ -83,25 +83,21 @@
 {% if isImporting == true %}
 <script type="text/javascript">
     async function cws5baddiImportProducts(products) {
-        await Promise.all(
-            products.map(async (product) => {
-                response = await fetch(
-                    `{{ urls.rest ~ namespace }}/v1/products/virtual`,
-                    {
-                        method: 'POST',
-                        headers: {
-                            'X-WP-Nonce': '{{ apiNonce }}',
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify(product)
-                    }
-                );
+        for (const product of products) {
+            await fetch(
+                `{{ urls.rest ~ namespace }}/v1/products/virtual`,
+                {
+                    method: 'POST',
+                    headers: {
+                        'X-WP-Nonce': '{{ apiNonce }}',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(product)
+                }
+            );
 
-                setTimeout(() => {}, 3000);
-
-                return Promise.resolve();
-            })
-        );
+            await sleep(1000);
+        }
 
         setTimeout(() => {
             window.location.replace('{{ urls.wooProducts }}');

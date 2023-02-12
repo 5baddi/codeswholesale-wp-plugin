@@ -6,6 +6,10 @@ function toggleCredentialsInputs(mode) {
     }
 }
 
+function sleep(delay) {
+    return new Promise((resolve) => setTimeout(resolve, delay));
+}
+
 jQuery(function () {
     toggleCredentialsInputs(jQuery('input[name=cws5baddi_api_mode]:checked').val());
 
