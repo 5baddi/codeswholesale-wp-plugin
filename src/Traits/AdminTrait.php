@@ -114,7 +114,7 @@ trait AdminTrait
     
                 $accountDetails = $codesWholesaleService->getAccountDetails($token);
 
-                update_option(Constants::BEARER_TOKEN_OPTION, json_encode($accountDetails ?? '{}'));
+                update_option(Constants::ACCOUNT_DETAILS_OPTION, json_encode($accountDetails ?? '{}'));
                 update_option(Constants::LAST_ACCOUNT_DETAILS_UPDATE_OPTION, time());
             } catch (Throwable $e) {
                 if ($e instanceof UnauthorizedException) {
@@ -312,17 +312,27 @@ trait AdminTrait
     {
         update_option(
             Constants::PROFIT_MARGIN_TYPE_OPTION,
-            intval($_POST[Constants::PROFIT_MARGIN_TYPE_OPTION] ?? Constants::DEFAULT_PROFIT_MARGIN_TYPE)
+            intval($_POST[Constants::PROFIT_MARGIN_TYPE_OPTION])
         );
 
         update_option(
             Constants::PROFIT_MARGIN_VALUE_OPTION,
-            intval($_POST[Constants::PROFIT_MARGIN_VALUE_OPTION] ?? Constants::DEFAULT_PROFIT_MARGIN_VALUE)
+            intval($_POST[Constants::PROFIT_MARGIN_VALUE_OPTION])
         );
 
         update_option(
             Constants::PRODUCT_DESCRIPTION_LANGUAGE_OPTION,
-            sanitize_text_field($_POST[Constants::PRODUCT_DESCRIPTION_LANGUAGE_OPTION] ?? Constants::DEFAULT_PRODUCT_DESCRIPTION_LANGUAGE)
+            sanitize_text_field($_POST[Constants::PRODUCT_DESCRIPTION_LANGUAGE_OPTION])
+        );
+
+        update_option(
+            Constants::DOUBLE_CHECK_PRICE_OPTION,
+            intval($_POST[Constants::DOUBLE_CHECK_PRICE_OPTION])
+        );
+
+        update_option(
+            Constants::HIDE_PRODUCTS_OPTION,
+            intval($_POST[Constants::HIDE_PRODUCTS_OPTION])
         );
 
         // update_option(
@@ -353,16 +363,6 @@ trait AdminTrait
         // update_option(
         //     Constants::RISK_SCORE_VALUE_OPTION,
         //     intval($_POST[Constants::RISK_SCORE_VALUE_OPTION] ?? Constants::DEFAULT_RISK_SCORE_VALUE)
-        // );
-
-        // update_option(
-        //     Constants::DOUBLE_CHECK_PRICE_OPTION,
-        //     intval($_POST[Constants::DOUBLE_CHECK_PRICE_OPTION] ?? 1)
-        // );
-
-        // update_option(
-        //     Constants::HIDE_PRODUCTS_OPTION,
-        //     intval($_POST[Constants::HIDE_PRODUCTS_OPTION] ?? 1)
         // );
 
         // update_option(
