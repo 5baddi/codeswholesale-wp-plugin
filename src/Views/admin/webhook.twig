@@ -7,7 +7,7 @@
 					<label>{{ 'URL'|translate }}</label>
 				</th>
 				<td style="padding: 1rem;">
-                    <input style="min-width: 60%;" type="url" value="{{ urls.rest ~ 'v1/webhook' }}" id="cws5baddi_webhook_endpoint" aria-describedby="cws5baddi_webhook_endpoint_description" readonly/>
+                    <input style="min-width: 60%;" type="url" value="{{ urls.rest ~ namespace ~ '/v1/webhook' }}" id="cws5baddi_webhook_endpoint" aria-describedby="cws5baddi_webhook_endpoint_description" readonly/>
                     <p class="description" id="cws5baddi_webhook_endpoint_description">
                         {{ 'Copy & set the webhook URL under API tab on CodesWholesale.'|translate }}
                     </p>
