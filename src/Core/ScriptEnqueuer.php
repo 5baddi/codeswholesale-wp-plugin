@@ -56,7 +56,7 @@ class ScriptEnqueuer
 
     public function __construct(string $name, array $dependencies = [], bool $loadInFooter = false)
     {
-        $this->id = sprintf('%s-script-%s', CodesWholesaleBy5baddi::NAMESPACE, basename($name));
+        $this->id = sprintf('%s-script-%s', CodesWholesaleBy5baddi::NAMESPACE, md5($name));
         $this->dependencies = $dependencies;
         $this->loadInFooter = $loadInFooter;
         $this->path = ! $this->isRemoteFile ? removeDoubleSlashes(Str::replace(CWS_5BADDI_PLUGIN_ASSETS_PATH, CWS_5BADDI_PLUGIN_ASSETS_URL, $name)) : $name;
@@ -133,7 +133,7 @@ class ScriptEnqueuer
 
         return $this;
     }
-    
+
     /**
      * Enqueue global JS object
      */
@@ -141,6 +141,18 @@ class ScriptEnqueuer
     {
         $this->enqueueInlineScript(
             $this->generateGlobalJsObject()
+        );
+
+        return $this;
+    }
+
+    /**
+     * Enqueue appended values to global JS object
+     */
+    public function enqueueAppendedDataToGlobalJsObject(array $data = []): self
+    {
+        $this->enqueueInlineScript(
+            $this->appendToGlobalJsObject($data)
         );
 
         return $this;

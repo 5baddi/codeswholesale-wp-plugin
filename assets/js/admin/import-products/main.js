@@ -1,0 +1,1 @@
+async function cws5baddiImportProducts(o){for(const a of o)await fetch(""+cws5Baddi.urls.rest+cws5Baddi.namespace+"/v1/products/virtual",{method:"POST",headers:{"X-WP-Nonce":cws5Baddi.apiNonce,"Content-Type":"application/json"},body:JSON.stringify(a)}),await sleep(1e3);setTimeout(()=>{window.location.replace(cws5Baddi.urls.wooProducts)},1e3)}jQuery(async function(){});

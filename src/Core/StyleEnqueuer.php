@@ -48,7 +48,7 @@ class StyleEnqueuer
 
     public function __construct(string $name)
     {
-        $this->id = sprintf('%s-style-%s', CodesWholesaleBy5baddi::NAMESPACE, basename($name));
+        $this->id = sprintf('%s-style-%s', CodesWholesaleBy5baddi::NAMESPACE, md5($name));
         $this->path = ! $this->isRemoteFile ? removeDoubleSlashes(Str::replace(CWS_5BADDI_PLUGIN_ASSETS_PATH, CWS_5BADDI_PLUGIN_ASSETS_URL, $name)) : $name;
     }
 

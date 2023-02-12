@@ -14,8 +14,10 @@ namespace BaddiServices\CodesWholesale\Traits;
 
 use Throwable;
 use Timber\Timber;
+use Illuminate\Support\Arr;
 use BaddiServices\CodesWholesale\Constants;
 use BaddiServices\CodesWholesale\Core\Container;
+use BaddiServices\CodesWholesale\Core\ScriptEnqueuer;
 use BaddiServices\CodesWholesale\Services\AuthService;
 use BaddiServices\CodesWholesale\CodesWholesaleBy5baddi;
 use BaddiServices\CodesWholesale\Exceptions\UnauthorizedException;
@@ -111,7 +113,7 @@ trait AdminTrait
             try {
                 /** @var CodesWholesaleService */
                 $codesWholesaleService = Container::get(CodesWholesaleService::class);
-    
+
                 $accountDetails = $codesWholesaleService->getAccountDetails($token);
 
                 update_option(Constants::ACCOUNT_DETAILS_OPTION, json_encode($accountDetails ?? '{}'));
@@ -178,6 +180,11 @@ trait AdminTrait
             $data['message'] = cws5baddiTranslation('Start importing products...');
             $data['isSuccess'] = true;
             $data['isImporting'] = true;
+
+            ScriptEnqueuer::load(sprintf('%sjs/admin/import-products/main.js', CWS_5BADDI_PLUGIN_ASSETS_PATH))
+                ->loadInFooter()
+                ->enqueue()
+                ->enqueueAppendedDataToGlobalJsObject($data);
         }
 
         $this->render('admin/import-products.twig', $data);
@@ -203,6 +210,21 @@ trait AdminTrait
         );
 
         Timber::render($view, array_merge($sharedData, $data));
+    }
+
+    private function registerAdminSettingPageStylesAndScripts(): void
+    {
+        global $pagenow;
+
+        if ($pagenow !== 'admin.php' || ! Arr::has($_GET, 'page')) {
+            return;
+        }
+
+        switch ($_GET['page']) {
+            case sprintf('%s-import-products', CodesWholesaleBy5baddi::SLUG):
+                
+                break;
+        }
     }
 
     private function isApiConnected(): bool
@@ -300,30 +322,40 @@ trait AdminTrait
 
     private function saveGeneralSettings(): void
     {
-        update_option(
-            Constants::PROFIT_MARGIN_TYPE_OPTION,
-            intval($_POST[Constants::PROFIT_MARGIN_TYPE_OPTION])
-        );
+        if (Arr::has($_POST, Constants::PROFIT_MARGIN_TYPE_OPTION)) {
+            update_option(
+                Constants::PROFIT_MARGIN_TYPE_OPTION,
+                intval($_POST[Constants::PROFIT_MARGIN_TYPE_OPTION])
+            );
+        }
 
-        update_option(
-            Constants::PROFIT_MARGIN_VALUE_OPTION,
-            intval($_POST[Constants::PROFIT_MARGIN_VALUE_OPTION])
-        );
+        if (Arr::has($_POST, Constants::PROFIT_MARGIN_VALUE_OPTION)) {
+            update_option(
+                Constants::PROFIT_MARGIN_VALUE_OPTION,
+                intval($_POST[Constants::PROFIT_MARGIN_VALUE_OPTION])
+            );
+        }
 
-        update_option(
-            Constants::PRODUCT_DESCRIPTION_LANGUAGE_OPTION,
-            sanitize_text_field($_POST[Constants::PRODUCT_DESCRIPTION_LANGUAGE_OPTION])
-        );
+        if (Arr::has($_POST, Constants::PRODUCT_DESCRIPTION_LANGUAGE_OPTION)) {
+            update_option(
+                Constants::PRODUCT_DESCRIPTION_LANGUAGE_OPTION,
+                sanitize_text_field($_POST[Constants::PRODUCT_DESCRIPTION_LANGUAGE_OPTION])
+            );
+        }
 
-        update_option(
-            Constants::DOUBLE_CHECK_PRICE_OPTION,
-            intval($_POST[Constants::DOUBLE_CHECK_PRICE_OPTION])
-        );
+        if (Arr::has($_POST, Constants::DOUBLE_CHECK_PRICE_OPTION)) {
+            update_option(
+                Constants::DOUBLE_CHECK_PRICE_OPTION,
+                intval($_POST[Constants::DOUBLE_CHECK_PRICE_OPTION])
+            );
+        }
 
-        update_option(
-            Constants::HIDE_PRODUCTS_OPTION,
-            intval($_POST[Constants::HIDE_PRODUCTS_OPTION])
-        );
+        if (Arr::has($_POST, Constants::HIDE_PRODUCTS_OPTION)) {
+            update_option(
+                Constants::HIDE_PRODUCTS_OPTION,
+                intval($_POST[Constants::HIDE_PRODUCTS_OPTION])
+            );
+        }
 
         // update_option(
         //     Constants::CURRENCY_OPTION,

@@ -28,7 +28,7 @@ use BaddiServices\CodesWholesale\CodesWholesaleBy5baddi;
 trait InlineScriptsTrait
 {
     /**
-     * Generate employer branding JS object
+     * Generate cws5Baddi JS object
      */
     private function generateGlobalJsObject(): string
     {
@@ -74,12 +74,60 @@ trait InlineScriptsTrait
         );
     }
 
+    /**
+     * append to cws5Baddi JS object
+     */
+    private function appendToGlobalJsObject(array $data = []): string
+    {
+        $values = '';
+
+        foreach ($data as $key => $item) {
+            $key = $this->parseKey($key);
+            $preparedValue = '';
+
+            if (is_object($item) || is_array($item)) {
+                $preparedValue = json_encode($item);
+            }
+
+            if (is_numeric($item)) {
+                $preparedValue = $item;
+            }
+
+            if (is_bool($item)) {
+                $preparedValue = $item ? 'true' : 'false';
+            }
+
+            if (is_string($item)) {
+                $preparedValue = sprintf("'%s'", addcslashes($item, "'"));
+            }
+
+            $values = sprintf(
+                "
+                    %s
+
+                    if (typeof cws5Baddi === 'object') {
+                        cws5Baddi.%s = %s;
+                    }
+
+                    %s
+                ",
+                $values,
+                $key,
+                $preparedValue,
+                PHP_EOL
+            );
+        }
+
+        return $values;
+    }
+
     private function prepareSharedData(): string
     {
         $sharedData = Constants::sharedData();
         $values = '';
 
         foreach ($sharedData as $key => $item) {
+            $key = $this->parseKey($key);
             $preparedValue = '';
 
             if (is_object($item) || is_array($item)) {
@@ -108,5 +156,16 @@ trait InlineScriptsTrait
         }
 
         return $values;
+    }
+
+    private function parseKey(string $key): string
+    {
+        $key = preg_replace('/[^a-zA-Z0-9]+/', '', $key);
+
+        if (is_int(substr($key, 0, 1))) {
+            $key = substr($key, 1, -1);
+        }
+
+        return $key;
     }
 }
