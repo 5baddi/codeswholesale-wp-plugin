@@ -51,7 +51,7 @@ class WooCommerceService
         $product->set_name($name);
         $product->set_slug(Str::lower(Str::slug($name)));
         $product->set_sku(sanitize_text_field($attributes['identifier']));
-        $product->add_meta_data('uuid', sanitize_text_field($attributes['productId']));
+        $product->add_meta_data('cws_product_uuid', sanitize_text_field($attributes['productId']));
 
         if (! empty($attributes['quantity'])) {
             $this->setQuantity($product, $attributes['quantity']);
@@ -81,16 +81,24 @@ class WooCommerceService
             }
         }
 
-        return $product->save();
+        $saved = $product->save();
+        if (! empty($productId)) {
+            return wp_update_post(['ID' => $productId, 'post_status' => 'publish']);
+        }
+
+        return $saved;
     }
 
     public function hideVirtualProduct(string $productId): bool
     {
-        if (! class_exists('WC_Product_Simple')) {
+        global $wpdb;
+
+        $id = $wpdb->get_var(sprintf('SELECT post_id FROM %s WHERE meta_key = \'cws_product_uuid\' AND meta_value = \'%s\';', $wpdb->postmeta, $productId));
+        if (empty($id)) {
             return false;
         }
 
-        return wp_update_post(['ID' => $productId, 'post_status' => 'pending']);
+        return wp_update_post(['ID' => intval($id), 'post_status' => 'pending']);
     }
 
     private function setQuantity(WC_Product_Simple $product, int $quantity): void

@@ -40,11 +40,6 @@ class AuthService
     {
         $apiClientId = get_option(Constants::API_CLIENT_ID_OPTION, '');
         $apiClientSecret = get_option(Constants::API_CLIENT_SECRET_OPTION, '');
-        $apiMode = get_option(Constants::API_MODE_OPTION, Constants::API_SANDBOX_MODE);
-
-        if ($apiMode === Constants::API_SANDBOX_MODE) {
-            return;
-        }
 
         if (
             empty($apiClientId)
@@ -80,6 +75,11 @@ class AuthService
 
     public static function verifyWebhookSignature(): bool
     {
+        $apiMode = get_option(Constants::API_MODE_OPTION, Constants::API_SANDBOX_MODE);
+        if ($apiMode === Constants::API_SANDBOX_MODE) {
+            return true;
+        }
+
         $body = json_decode(@file_get_contents('php://input') ?? '{}', true);
         if (empty($body['authHash']) || empty($body['type'])) {
             return false;
