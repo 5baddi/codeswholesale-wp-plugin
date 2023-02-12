@@ -33,3 +33,13 @@ if (! function_exists('cws5baddiTranslation')) {
         return __($text, CWS_5BADDI_PLUGIN_TEXT_DOMAIN);
     }
 }
+
+if (!function_exists('removeDoubleSlashes')) {
+    /**
+     * Remove double slashes from URL/path
+     */
+    function removeDoubleSlashes(string $url): string
+    {
+        return preg_replace('#(?<!:)/+#im', '/', $url);
+    }
+}

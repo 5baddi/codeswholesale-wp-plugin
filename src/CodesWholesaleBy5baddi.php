@@ -15,7 +15,9 @@ namespace BaddiServices\CodesWholesale;
 use Timber\Timber;
 use Illuminate\Support\Str;
 use BaddiServices\CodesWholesale\Traits\AdminTrait;
+use BaddiServices\CodesWholesale\Core\StyleEnqueuer;
 use BaddiServices\CodesWholesale\Traits\TimberTrait;
+use BaddiServices\CodesWholesale\Core\ScriptEnqueuer;
 use BaddiServices\CodesWholesale\Traits\ProductTrait;
 use BaddiServices\CodesWholesale\Traits\CodesWholesaleTrait;
 
@@ -131,21 +133,17 @@ class CodesWholesaleBy5baddi
         $adminScripts = glob(sprintf('%sassets/js/admin/*.js', CWS_5BADDI_PLUGIN_BASEPATH));
 
         foreach ($adminStyles as $adminStyle) {
-            wp_enqueue_style(
-                sprintf('%s_%s', self::NAMESPACE, basename($adminStyle)),
-                sprintf('%s%s', CWS_5BADDI_PLUGIN_ASSETS_URL, Str::replace(CWS_5BADDI_PLUGIN_ASSETS_PATH, '', $adminStyle)),
-                [],
-                CWS_5BADDI_PLUGIN_ASSETS_VERSION
-            );
+            StyleEnqueuer::load($adminStyle)
+                ->enqueue();
         }
 
         foreach ($adminScripts as $adminScript) {
-            wp_enqueue_script(
-                sprintf('%s_%s', self::NAMESPACE, basename($adminScript)),
-                sprintf('%s%s', CWS_5BADDI_PLUGIN_ASSETS_URL, Str::replace(CWS_5BADDI_PLUGIN_ASSETS_PATH, '', $adminScript)),
-                [],
-                CWS_5BADDI_PLUGIN_ASSETS_VERSION
-            );
+            $scriptEnqueuer = ScriptEnqueuer::load($adminScript)
+                ->enqueue();
+
+            if (basename($adminScript) === 'main.js') {
+                $scriptEnqueuer->enqueueGlobalJsObject();
+            }
         }
     }
 }

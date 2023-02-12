@@ -12,6 +12,8 @@
 
 namespace BaddiServices\CodesWholesale;
 
+use BaddiServices\CodesWholesale\CodesWholesaleBy5baddi;
+
 /**
  * Class Constants.
  *
@@ -417,4 +419,24 @@ class Constants
         'za' => 'Zhuang, Chuang',
         'zu' => 'Zulu'
     ];
+
+    public static function sharedData(): array
+    {
+        return [
+            'currencies'     => self::CURRENCIES_LIST,
+            'languages'      => self::LANGUAGES_LIST,
+            'logo'           => sprintf('%simg/logo.svg', CWS_5BADDI_PLUGIN_ASSETS_URL),
+            'urls'           => [
+                'accountSettings' => admin_url(sprintf('admin.php?page=%s-account-details', CodesWholesaleBy5baddi::SLUG)),
+                'generalSettings' => admin_url(sprintf('admin.php?page=%s', CodesWholesaleBy5baddi::SLUG)),
+                'importProducts'  => admin_url(sprintf('admin.php?page=%s-import-products', CodesWholesaleBy5baddi::SLUG)),
+                'wooProducts'     => admin_url('edit.php?post_type=product'),
+                'rest'            => get_rest_url(),
+            ],
+            'isDebugMode' => (defined('WP_DEBUG') && WP_DEBUG === true),
+            'apiNonce'    => wp_create_nonce('wp_rest'),
+            'slug'        => CodesWholesaleBy5baddi::SLUG,
+            'namespace'   => CodesWholesaleBy5baddi::NAMESPACE,
+        ];
+    }
 }

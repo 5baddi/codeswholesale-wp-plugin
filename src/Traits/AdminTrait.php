@@ -192,25 +192,15 @@ trait AdminTrait
 
     public function render(string $view, array $data = []): void
     {
-        $sharedData = [
-            'groupName'      => $this->getGroupName(),
-            'values'         => $this->settingsValues(),
-            'currencies'     => Constants::CURRENCIES_LIST,
-            'languages'      => Constants::LANGUAGES_LIST,
-            'logo'           => sprintf('%simg/logo.svg', CWS_5BADDI_PLUGIN_ASSETS_URL),
-            'isApiConnected' => $this->isApiConnected(),
-            'urls'           => [
-                'accountSettings' => admin_url(sprintf('admin.php?page=%s-account-details', CodesWholesaleBy5baddi::SLUG)),
-                'generalSettings' => admin_url(sprintf('admin.php?page=%s', CodesWholesaleBy5baddi::SLUG)),
-                'importProducts'  => admin_url(sprintf('admin.php?page=%s-import-products', CodesWholesaleBy5baddi::SLUG)),
-                'wooProducts'     => admin_url('edit.php?post_type=product'),
-                'rest'            => get_rest_url(),
-            ],
-            'isDebugMode' => (defined('WP_DEBUG') && WP_DEBUG === true),
-            'apiNonce'    => wp_create_nonce('wp_rest'),
-            'slug'        => CodesWholesaleBy5baddi::SLUG,
-            'namespace'   => CodesWholesaleBy5baddi::NAMESPACE,
-        ];
+        $sharedData = Constants::sharedData();
+        $sharedData = array_merge(
+            $sharedData,
+            [
+                'groupName'      => $this->getGroupName(),
+                'values'         => $this->settingsValues(),
+                'isApiConnected' => $this->isApiConnected(),
+            ]
+        );
 
         Timber::render($view, array_merge($sharedData, $data));
     }
