@@ -7,7 +7,7 @@ function toggleCredentialsInputs(mode) {
 }
 
 jQuery(function () {
-    toggleCredentialsInputs(jQuery('input[name=cws5baddi_api_mode]').val());
+    toggleCredentialsInputs(jQuery('input[name=cws5baddi_api_mode]:checked').val());
 
     jQuery('input[name=cws5baddi_api_mode]').on('change', function () {
         toggleCredentialsInputs(jQuery(this).val());
