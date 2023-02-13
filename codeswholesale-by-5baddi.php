@@ -36,4 +36,8 @@ define('CWS_5BADDI_PLUGIN_VERSION', '0.3');
 define('CWS_5BADDI_PLUGIN_ASSETS_VERSION', '0.1.1'); 
 define('CWS_5BADDI_PLUGIN_DB_VERSION', '0.1');
 
+if (defined('WP_DEBUG') && WP_DEBUG) {
+    opcache_reset();
+}
+
 $codesWholesaleBy5baddi = CodesWholesaleBy5baddi::getInstance();
