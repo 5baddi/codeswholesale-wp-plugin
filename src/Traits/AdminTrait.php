@@ -221,7 +221,9 @@ trait AdminTrait
     
                 $results = $codesWholesaleService->getOrders($token);
 
-                $table->setData($results['items'] ?? [])
+                $table
+                    ->setData($results['items'] ?? [])
+                    ->search()
                     ->prepare_items();
             } catch (Throwable $e) {
                 if ($e instanceof UnauthorizedException) {

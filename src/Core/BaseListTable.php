@@ -29,20 +29,22 @@ class BaseListTable extends WP_List_Table
     /**
      * @var array
      */
-    private $data = [];
+    protected $data = [];
 
     /**
      * @var array
      */
-    private $hiddenFields = [];
+    protected $hiddenFields = [];
 
     /**
      * @var int
      */
-    private $itemsPerPage = Constants::PAGINATION_ITEMS_PER_PAGE;
+    protected $itemsPerPage = Constants::PAGINATION_ITEMS_PER_PAGE;
 
     public function prepare_items(): void
     {
+        $this->search();
+
         $this->_column_headers = [$this->get_columns(), $this->hiddenFields, $this->get_sortable_columns()];
         $this->items = array_slice($this->data, (($this->get_pagenum() - 1) * $this->itemsPerPage), $this->itemsPerPage);
 
@@ -53,6 +55,11 @@ class BaseListTable extends WP_List_Table
             'per_page'    => $this->itemsPerPage,
             'total_pages' => ceil(sizeof($this->data) / $this->itemsPerPage),
         ]);
+    }
+
+    public function search(): self 
+    {
+        return $this;
     }
 
     public function get_columns(): array 

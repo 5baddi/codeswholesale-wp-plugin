@@ -436,6 +436,7 @@ class Constants
                 'accountSettings' => admin_url(sprintf('admin.php?page=%s-account-details', CodesWholesaleBy5baddi::SLUG)),
                 'generalSettings' => admin_url(sprintf('admin.php?page=%s', CodesWholesaleBy5baddi::SLUG)),
                 'importProducts'  => admin_url(sprintf('admin.php?page=%s-import-products', CodesWholesaleBy5baddi::SLUG)),
+                'ordersHistory'   => admin_url(sprintf('admin.php?page=%s-orders-history', CodesWholesaleBy5baddi::SLUG)),
                 'wooProducts'     => admin_url('edit.php?post_type=product'),
                 'rest'            => get_rest_url(),
             ],

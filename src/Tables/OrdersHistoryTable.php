@@ -63,24 +63,26 @@ class OrdersHistoryTable extends BaseListTable
         return $value;
     }
 
-    public function search(): void
+    public function search(): self
     {
         $term = sanitize_text_field($_POST['s'] ?? '');
         if (empty($term)) {
-            return;
+            return parent::search();
         }
 
-        $this->data = array_filter($this->data ?? [], function ($value) use ($term) {
-            $value = Str::lower($value);
+        $this->data = array_filter($this->data ?? [], function ($items) use ($term) {
+            foreach ($items as $key => $item) {
+                if (! in_array($key, array_keys($this->get_columns()))) {
+                    continue;
+                }
 
-            return Str::contains($value, Str::lower($term));
+                $item = Str::lower((string) $item);
+                if (Str::contains($item, Str::lower($term))) {
+                    return true;
+                }
+            }
         });
-    }
 
-    public function prepare_items(): void
-    {
-        $this->search();
-
-        parent::prepare_items();
+        return parent::search();
     }
 }
