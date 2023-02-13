@@ -1,5 +1,8 @@
 {% include 'admin/partials/header.twig' with { isSuccess, message, title: 'Orders History' } %}
 <div class="wrap">
-{{ table.display()|raw }}
+    <form method="POST">
+        {{ table.search_box('Search'|translate, 'order_id')|raw }}
+        {{ table.display()|raw }}
+    </form>
 </div>
 {% include 'admin/partials/footer.twig' with { isApiConnected } %}

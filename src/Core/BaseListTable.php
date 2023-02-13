@@ -41,15 +41,12 @@ class BaseListTable extends WP_List_Table
      */
     private $itemsPerPage = Constants::PAGINATION_ITEMS_PER_PAGE;
 
-    /**
-     * @var array
-     */
-    private $sortableFields = [];
-
     public function prepare_items(): void
     {
-        $this->_column_headers = [$this->get_columns(), $this->hiddenFields, $this->sortableFields];
+        $this->_column_headers = [$this->get_columns(), $this->hiddenFields, $this->get_sortable_columns()];
         $this->items = array_slice($this->data, (($this->get_pagenum() - 1) * $this->itemsPerPage), $this->itemsPerPage);
+
+        usort($this->items, [&$this, 'usortReorders']);
 
         $this->set_pagination_args([
             'total_items' => sizeof($this->data),
@@ -63,9 +60,23 @@ class BaseListTable extends WP_List_Table
         return [];
     }
 
+    public function get_sortable_columns(): array 
+    {
+        return [];
+    }
+
     public function column_default($item, $columnName)
     {
         return $item[$columnName] ?? null;
+    }
+
+    public function usortReorders($a, $b)
+    {
+        $orderby = (!empty($_GET['orderby'])) ? $_GET['orderby'] : null;
+        $order = (!empty($_GET['order'])) ? $_GET['order'] : 'asc';
+        $result = strcmp($a[$orderby] ?? '', $b[$orderby] ?? '');
+
+        return ($order === 'asc') ? $result : -$result;
     }
 
     public function setData(array $data): self
@@ -85,13 +96,6 @@ class BaseListTable extends WP_List_Table
     public function setHiddenFields(array $fields): self
     {
         $this->hiddenFields = $fields;
-
-        return $this;
-    }
-
-    public function setSortableFields(array $fields): self
-    {
-        $this->sortableFields = $fields;
 
         return $this;
     }

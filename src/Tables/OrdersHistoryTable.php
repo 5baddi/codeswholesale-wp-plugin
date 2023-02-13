@@ -12,6 +12,7 @@
 
 namespace BaddiServices\CodesWholesale\Tables;
 
+use Illuminate\Support\Str;
 use BaddiServices\CodesWholesale\Core\BaseListTable;
 
 /**
@@ -36,13 +37,23 @@ class OrdersHistoryTable extends BaseListTable
         ];
     }
 
+    public function get_sortable_columns(): array
+    {
+        return [
+            'identifier'    => ['identifier', true],
+            'totalPrice'    => ['totalPrice', true],
+            'status'        => ['status', true],
+            'createdOn'     => ['createdOn', true],
+        ];
+    }
+
     public function column_default($item, $columnName)
     {
         $value = $item[$columnName] ?? null;
 
         switch ($columnName) {
             case 'totalPrice':
-                $value = number_format(sprintf('%02f', $value), 2, '.', ' ');
+                $value = number_format($value, 2, '.', ' ');
                 break;
             case 'createdOn':
                 $value = date('Y/m/d H:i', strtotime($value));
@@ -50,5 +61,26 @@ class OrdersHistoryTable extends BaseListTable
         }
 
         return $value;
+    }
+
+    public function search(): void
+    {
+        $term = sanitize_text_field($_POST['s'] ?? '');
+        if (empty($term)) {
+            return;
+        }
+
+        $this->data = array_filter($this->data ?? [], function ($value) use ($term) {
+            $value = Str::lower($value);
+
+            return Str::contains($value, Str::lower($term));
+        });
+    }
+
+    public function prepare_items(): void
+    {
+        $this->search();
+
+        parent::prepare_items();
     }
 }
