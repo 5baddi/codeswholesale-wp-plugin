@@ -35,10 +35,6 @@ class WpService
             return false;
         }
 
-        if (! class_exists('WP_Http')) {
-            require_once(sprintf('%swp-admin/includes/class-http.php', ABSPATH));
-        }
-
         $client = new Client(['allow_redirects' => ['track_redirects' => true]]);
         $response = $client->get($url);
         $headersRedirect = $response->getHeader(RedirectMiddleware::HISTORY_HEADER);

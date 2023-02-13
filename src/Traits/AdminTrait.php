@@ -20,6 +20,7 @@ use BaddiServices\CodesWholesale\Core\Container;
 use BaddiServices\CodesWholesale\Core\ScriptEnqueuer;
 use BaddiServices\CodesWholesale\Services\AuthService;
 use BaddiServices\CodesWholesale\CodesWholesaleBy5baddi;
+use BaddiServices\CodesWholesale\Tables\OrdersHistoryTable;
 use BaddiServices\CodesWholesale\Exceptions\UnauthorizedException;
 use BaddiServices\CodesWholesale\Services\Domains\CodesWholesaleService;
 
@@ -209,7 +210,27 @@ trait AdminTrait
 
     public function renderOrdersHistoryPage(): void
     {
-        $data = [];
+        $token = get_option(Constants::BEARER_TOKEN_OPTION, '');
+        $orders = [];
+        $table = new OrdersHistoryTable();
+
+        if (! empty($token)) {
+            try {
+                /** @var CodesWholesaleService */
+                $codesWholesaleService = Container::get(CodesWholesaleService::class);
+    
+                $results = $codesWholesaleService->getOrders($token);
+
+                $table->setData($results['items'] ?? [])
+                    ->prepare_items();
+            } catch (Throwable $e) {
+                if ($e instanceof UnauthorizedException) {
+                    AuthService::createCodesWholesaleToken();
+                }
+            }
+        }
+
+        $data = ['table' => $table, 'orders' => $orders];
 
         $this->render('admin/orders-history.twig', $data);
     }

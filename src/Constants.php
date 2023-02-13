@@ -61,6 +61,8 @@ class Constants
         'codeswholesale.com',
     ];
 
+    public const PAGINATION_ITEMS_PER_PAGE = 25;
+
     // Default values
     public const DEFAULT_PROFIT_MARGIN_VALUE = 5;
     public const DEFAULT_PROFIT_MARGIN_TYPE = self::PROFIT_MARGIN_PERCENTAGE;

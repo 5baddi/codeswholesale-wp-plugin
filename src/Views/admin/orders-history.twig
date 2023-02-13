@@ -1,3 +1,5 @@
 {% include 'admin/partials/header.twig' with { isSuccess, message, title: 'Orders History' } %}
-
+<div class="wrap">
+{{ table.display()|raw }}
+</div>
 {% include 'admin/partials/footer.twig' with { isApiConnected } %}
