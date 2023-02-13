@@ -80,6 +80,15 @@ trait AdminTrait
             sprintf('%s-webhook', CodesWholesaleBy5baddi::SLUG),
             [$this, 'renderWebhookPage']
         );
+
+        add_submenu_page(
+            sprintf('%s-account-details', CodesWholesaleBy5baddi::SLUG),
+            cws5baddiTranslation('Orders history'),
+            cws5baddiTranslation('Orders history'),
+            'publish_posts',
+            sprintf('%s-orders-history', CodesWholesaleBy5baddi::SLUG),
+            [$this, 'renderOrdersHistoryPage']
+        );
     }
 
     public function registerSettingsPageOptions(): void
@@ -196,6 +205,13 @@ trait AdminTrait
         $data = [];
 
         $this->render('admin/webhook.twig', $data);
+    }
+
+    public function renderOrdersHistoryPage(): void
+    {
+        $data = [];
+
+        $this->render('admin/orders-history.twig', $data);
     }
 
     public function render(string $view, array $data = []): void
