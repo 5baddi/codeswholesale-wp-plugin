@@ -57,6 +57,10 @@ class Constants
     public const API_SANDBOX_MODE = 'sandbox';
     public const API_LIVE_MODE = 'live';
 
+    public const ALLOWED_ORIGINS = [
+        'codeswholesale.com',
+    ];
+
     // Default values
     public const DEFAULT_PROFIT_MARGIN_VALUE = 5;
     public const DEFAULT_PROFIT_MARGIN_TYPE = self::PROFIT_MARGIN_PERCENTAGE;

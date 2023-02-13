@@ -19,6 +19,7 @@ use BaddiServices\CodesWholesale\Core\StyleEnqueuer;
 use BaddiServices\CodesWholesale\Traits\TimberTrait;
 use BaddiServices\CodesWholesale\Core\ScriptEnqueuer;
 use BaddiServices\CodesWholesale\Traits\ProductTrait;
+use BaddiServices\CodesWholesale\Traits\ApplyFiltersTrait;
 use BaddiServices\CodesWholesale\Traits\CodesWholesaleTrait;
 
 /**
@@ -32,7 +33,7 @@ use BaddiServices\CodesWholesale\Traits\CodesWholesaleTrait;
  */
 class CodesWholesaleBy5baddi
 {
-    use AdminTrait, TimberTrait, CodesWholesaleTrait, ProductTrait;
+    use AdminTrait, TimberTrait, CodesWholesaleTrait, ProductTrait, ApplyFiltersTrait;
 
     public const SLUG = 'codeswholesale-by-5baddi';
     public const NAMESPACE = 'cws5baddi';
@@ -94,6 +95,9 @@ class CodesWholesaleBy5baddi
         // Filters
         // Timber twig filter
         add_filter('timber/twig', [$this, 'addTwigHelpers']);
+
+        // Only allowed origins
+        add_filter('rest_authentication_errors', [$this, 'restAuthenticationErrors']);
     }
 
     public function pluginsLoaded(): void

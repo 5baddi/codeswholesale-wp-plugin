@@ -5,7 +5,7 @@ Plugin Name: CodesWholesale by @5baddi
 Author: 5baddi
 Author URI: http://www.baddi.info/
 Description: WordPress integration with CodesWholesale API.
-Version: 0.2
+Version: 0.3
 Text Domain: cws_5baddi
 */
 
