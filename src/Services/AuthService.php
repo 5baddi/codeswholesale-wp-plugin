@@ -60,11 +60,8 @@ class AuthService
             update_option(Constants::BEARER_TOKEN_EXPIRES_IN_OPTION, $token['expires_in'] ?? 0);
 
             $accountDetails = $codesWholesaleService->getAccountDetails($token['access_token']);
-            if (empty($accountDetails)) {
-                return self::createCodesWholesaleToken();
-            }
 
-            update_option(Constants::ACCOUNT_DETAILS_OPTION, json_encode($accountDetails));
+            update_option(Constants::ACCOUNT_DETAILS_OPTION, json_encode($accountDetails ?? '{}'));
         }
 
         if (empty($token) || empty($token['access_token'])) {

@@ -12,10 +12,10 @@
 
 namespace BaddiServices\CodesWholesale\Traits;
 
-use Illuminate\Support\Arr;
 use BaddiServices\CodesWholesale\Constants;
 use BaddiServices\CodesWholesale\Core\Container;
 use BaddiServices\CodesWholesale\Services\AuthService;
+use BaddiServices\CodesWholesale\Exceptions\UnauthorizedException;
 use BaddiServices\CodesWholesale\Services\Domains\CodesWholesaleService;
 
 /**
@@ -29,18 +29,24 @@ use BaddiServices\CodesWholesale\Services\Domains\CodesWholesaleService;
  */
 trait CodesWholesaleTrait
 {
-    public function authenticate(): void
+    public function authenticate(int $tries = 1, int &$tried = 0)
     {
-        $values = $this->settingsValues();
-        $expiresIn = $values[Constants::BEARER_TOKEN_EXPIRES_IN_OPTION] ?? 0;
+        try {
+            $values = $this->settingsValues();
+            $expiresIn = $values[Constants::BEARER_TOKEN_EXPIRES_IN_OPTION] ?? 0;
 
-        if (
-            empty($values[Constants::BEARER_TOKEN_OPTION])
-            && ! empty($values[Constants::API_CLIENT_ID_OPTION])
-            && ! empty($values[Constants::API_CLIENT_SECRET_OPTION])
-            || AuthService::isTokenExpired($expiresIn)
-        ) {
-            AuthService::createCodesWholesaleToken();
+            if (
+                empty($values[Constants::BEARER_TOKEN_OPTION])
+                && ! empty($values[Constants::API_CLIENT_ID_OPTION])
+                && ! empty($values[Constants::API_CLIENT_SECRET_OPTION])
+                || AuthService::isTokenExpired($expiresIn)
+            ) {
+                AuthService::createCodesWholesaleToken();
+            }
+        } catch (UnauthorizedException $e) {
+            if ($tries < $tried) {
+                return $this->authenticate($tries, ++$tried);
+            }
         }
     }
 

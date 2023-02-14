@@ -95,7 +95,10 @@ class CodesWholesaleService
 
             return $this->fromJson($response);
         } catch (Throwable $e) {
-            // FIXME: throw custom exception
+            if ($e->getCode() === 401) {
+                throw new UnauthorizedException('Unauthorized', 401, $e);
+            }
+
             return null;
         }
     }
@@ -118,10 +121,6 @@ class CodesWholesaleService
 
             return $this->fromJson($response);
         } catch (Throwable $e) {
-            if ($e->getCode() === 401) {
-                throw new UnauthorizedException();
-            }
-
             return [];
         }
     }
@@ -233,10 +232,6 @@ class CodesWholesaleService
 
             return $this->fromJson($response);
         } catch (Throwable $e) {
-            if ($e->getCode() === 401) {
-                throw new UnauthorizedException();
-            }
-
             return [];
         }
     }
@@ -260,10 +255,6 @@ class CodesWholesaleService
 
             return $this->fromJson($response);
         } catch (Throwable $e) {
-            if ($e->getCode() === 401) {
-                throw new UnauthorizedException();
-            }
-
             return [];
         }
     }
@@ -286,10 +277,6 @@ class CodesWholesaleService
 
             return $this->fromJson($response);
         } catch (Throwable $e) {
-            if ($e->getCode() === 401) {
-                throw new UnauthorizedException();
-            }
-
             return [];
         }
     }
