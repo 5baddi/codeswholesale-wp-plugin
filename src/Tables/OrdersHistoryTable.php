@@ -14,6 +14,7 @@ namespace BaddiServices\CodesWholesale\Tables;
 
 use Illuminate\Support\Str;
 use BaddiServices\CodesWholesale\Core\BaseListTable;
+use BaddiServices\CodesWholesale\CodesWholesaleBy5baddi;
 
 /**
  * Class OrdersHistoryTable.
@@ -95,9 +96,10 @@ class OrdersHistoryTable extends BaseListTable
                 cws5baddiTranslation('View details')
             ),
             'invoice'  => sprintf(
-                '<a href="?page=%s&action=order-invoice&id=%s">%s</a>', 
-                $_REQUEST['page'],
+                '<a href="javascript:void(0);" class="%s-download-invoice" data-id="%s" data-name="%s">%s</a>', 
+                CodesWholesaleBy5baddi::NAMESPACE,
                 $item['orderId'],
+                $item['identifier'],
                 cws5baddiTranslation('Download invoice')
             ),
         ];

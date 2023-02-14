@@ -12,7 +12,6 @@
 
 namespace BaddiServices\CodesWholesale\Traits;
 
-use Throwable;
 use Timber\Timber;
 use Illuminate\Support\Arr;
 use BaddiServices\CodesWholesale\Constants;
@@ -21,7 +20,6 @@ use BaddiServices\CodesWholesale\Core\ScriptEnqueuer;
 use BaddiServices\CodesWholesale\Services\AuthService;
 use BaddiServices\CodesWholesale\CodesWholesaleBy5baddi;
 use BaddiServices\CodesWholesale\Tables\OrdersHistoryTable;
-use BaddiServices\CodesWholesale\Exceptions\UnauthorizedException;
 use BaddiServices\CodesWholesale\Services\Domains\CodesWholesaleService;
 
 /**
@@ -120,19 +118,13 @@ trait AdminTrait
         $lastUpdate = intval(get_option(Constants::LAST_ACCOUNT_DETAILS_UPDATE_OPTION, 0));
 
         if (! empty($token) || $lastUpdate < strtotime('+15 minutes', time())) {
-            try {
-                /** @var CodesWholesaleService */
-                $codesWholesaleService = Container::get(CodesWholesaleService::class);
+            /** @var CodesWholesaleService */
+            $codesWholesaleService = Container::get(CodesWholesaleService::class);
 
-                $accountDetails = $codesWholesaleService->getAccountDetails($token);
+            $accountDetails = $codesWholesaleService->getAccountDetails($token);
 
-                update_option(Constants::ACCOUNT_DETAILS_OPTION, json_encode($accountDetails ?? '{}'));
-                update_option(Constants::LAST_ACCOUNT_DETAILS_UPDATE_OPTION, time());
-            } catch (Throwable $e) {
-                if ($e instanceof UnauthorizedException) {
-                    AuthService::createCodesWholesaleToken();
-                }
-            }
+            update_option(Constants::ACCOUNT_DETAILS_OPTION, json_encode($accountDetails ?? '{}'));
+            update_option(Constants::LAST_ACCOUNT_DETAILS_UPDATE_OPTION, time());
         }
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && check_admin_referer($this->getGroupName())) {
@@ -215,24 +207,22 @@ trait AdminTrait
         $table = new OrdersHistoryTable();
 
         if (! empty($token)) {
-            try {
-                /** @var CodesWholesaleService */
-                $codesWholesaleService = Container::get(CodesWholesaleService::class);
+            /** @var CodesWholesaleService */
+            $codesWholesaleService = Container::get(CodesWholesaleService::class);
     
-                $results = $codesWholesaleService->getOrders($token);
+            $results = $codesWholesaleService->getOrders($token);
 
-                $table
-                    ->setData($results['items'] ?? [])
-                    ->search()
-                    ->prepare_items();
-            } catch (Throwable $e) {
-                if ($e instanceof UnauthorizedException) {
-                    AuthService::createCodesWholesaleToken();
-                }
-            }
+            $table
+                ->setData($results['items'] ?? [])
+                ->search()
+                ->prepare_items();
         }
 
         $data = ['table' => $table, 'orders' => $orders];
+
+        ScriptEnqueuer::load(sprintf('%sjs/admin/orders-history/main.js', CWS_5BADDI_PLUGIN_ASSETS_PATH))
+            ->loadInFooter()
+            ->enqueue();
 
         $this->render('admin/orders-history.twig', $data);
     }

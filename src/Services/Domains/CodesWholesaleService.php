@@ -46,6 +46,7 @@ class CodesWholesaleService
     public const TERRITORIES_ENDPOINT = '/v2/territory';
     public const PLATFORMS_ENDPOINT = '/v2/platforms';
     public const ORDERS_ENDPOINT = '/v2/orders';
+    public const ORDER_INVOICE_ENDPOINT = '/v2/orders/{orderId}/invoice';
 
     public const NEW_PRODUCT_WEBHOOK_EVENT = 'NEW_PRODUCT';
     public const PRODUCT_UPDATED_WEBHOOK_EVENT = 'PRODUCT_UPDATED';
@@ -264,6 +265,28 @@ class CodesWholesaleService
         try {
             $response = $this->client->get(
                 Str::replace('{productId}', $productId, self::PRODUCT_ENDPOINT),
+                [
+                    'headers' => [
+                        'Authorization' => sprintf('Bearer %s', $token)
+                    ]
+                ]
+            );
+
+            if ($response->getStatusCode() !== 200) {
+                return [];
+            }
+
+            return $this->fromJson($response);
+        } catch (Throwable $e) {
+            return [];
+        }
+    }
+
+    public function getOrderInvoice(string $token, string $orderId): array
+    {
+        try {
+            $response = $this->client->get(
+                Str::replace('{orderId}', $orderId, self::ORDER_INVOICE_ENDPOINT),
                 [
                     'headers' => [
                         'Authorization' => sprintf('Bearer %s', $token)
