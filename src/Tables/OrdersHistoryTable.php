@@ -33,7 +33,6 @@ class OrdersHistoryTable extends BaseListTable
             'totalPrice'    => cws5baddiTranslation('Total price (€)'),
             'status'        => cws5baddiTranslation('Status'),
             'createdOn'     => cws5baddiTranslation('Created on'),
-            'actions'       => cws5baddiTranslation('Actions'),
         ];
     }
 
@@ -84,5 +83,25 @@ class OrdersHistoryTable extends BaseListTable
         });
 
         return parent::search();
+    }
+
+    public function column_identifier($item)
+    {
+        $actions = [
+            'view'  => sprintf(
+                '<a href="?page=%s&action=view-order&id=%s">%s</a>', 
+                $_REQUEST['page'],
+                $item['orderId'],
+                cws5baddiTranslation('View details')
+            ),
+            'invoice'  => sprintf(
+                '<a href="?page=%s&action=order-invoice&id=%s">%s</a>', 
+                $_REQUEST['page'],
+                $item['orderId'],
+                cws5baddiTranslation('Download invoice')
+            ),
+        ];
+
+        return sprintf('%s %s', $item['identifier'], $this->row_actions($actions));
     }
 }
