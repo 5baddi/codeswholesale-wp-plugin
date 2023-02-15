@@ -89,12 +89,12 @@ class OrdersHistoryTable extends BaseListTable
     public function column_identifier($item)
     {
         $actions = [
-            'view'  => sprintf(
-                '<a href="?page=%s&action=view-order&id=%s">%s</a>', 
-                $_REQUEST['page'],
-                $item['orderId'],
-                cws5baddiTranslation('View details')
-            ),
+            // 'view'  => sprintf(
+            //     '<a href="?page=%s&action=view-order&id=%s">%s</a>', 
+            //     $_REQUEST['page'],
+            //     $item['orderId'],
+            //     cws5baddiTranslation('View details')
+            // ),
             'invoice'  => sprintf(
                 '<a href="javascript:void(0);" class="%s-download-invoice" data-id="%s" data-name="%s">%s</a>', 
                 CodesWholesaleBy5baddi::NAMESPACE,
