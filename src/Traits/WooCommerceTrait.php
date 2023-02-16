@@ -12,6 +12,11 @@
 
 namespace BaddiServices\CodesWholesale\Traits;
 
+use Illuminate\Support\Arr;
+use BaddiServices\CodesWholesale\Constants;
+use BaddiServices\CodesWholesale\Core\Container;
+use BaddiServices\CodesWholesale\Services\Domains\CodesWholesaleService;
+
 /**
  * Trait WooCommerceTrait.
  *
@@ -41,14 +46,28 @@ trait WooCommerceTrait
 
         if (empty($customerEmail) || empty($customerAgent) || empty($customerIp)) {
             wc_add_notice(
-                cws5baddiTranslation('Your order can’t be completed because of an issue with the merchant payment setup! Please contact us about this issue...'),
+                cws5baddiTranslation('Your order can’t be completed because of an issue with the merchant payment setup! Please contact the support...'),
                 'error'
             );
         }
 
-        wc_add_notice(
-            cws5baddiTranslation('Unable to process payment!'),
-            'error'
-        );
+        /** @var CodesWholesaleService */
+        $codesWholesaleService = Container::get(CodesWholesaleService::class);
+
+        $token = get_option(Constants::BEARER_TOKEN_OPTION, '');
+        $allowedRiskScore = floatval(get_option(Constants::ALLOWED_RISK_SCORE_OPTION, Constants::DEFAULT_ALLOWED_RISK_SCORE));
+
+        $customerSecurityCheck = $codesWholesaleService->checkCustomerRiskScore($token, $customerEmail, $customerAgent, $customerIp);
+
+        if (
+            empty($token)
+            || ! Arr::has($customerSecurityCheck, 'riskScore')
+            || floatval($customerSecurityCheck['riskScore']) >= $allowedRiskScore
+        ) {
+            wc_add_notice(
+                cws5baddiTranslation('Unable to process your order!'),
+                'error'
+            );
+        }
     }
 }

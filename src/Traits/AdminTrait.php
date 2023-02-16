@@ -311,6 +311,8 @@ trait AdminTrait
             => json_decode(get_option(Constants::ACCOUNT_DETAILS_OPTION, '[]'), true),
             Constants::API_MODE_OPTION
             => get_option(Constants::API_MODE_OPTION, Constants::API_SANDBOX_MODE),
+            Constants::ALLOWED_RISK_SCORE_OPTION
+            => floatval(get_option(Constants::ALLOWED_RISK_SCORE_OPTION, Constants::DEFAULT_ALLOWED_RISK_SCORE)),
         ];
     }
 
@@ -384,6 +386,13 @@ trait AdminTrait
             update_option(
                 Constants::HIDE_PRODUCTS_OPTION,
                 intval($_POST[Constants::HIDE_PRODUCTS_OPTION])
+            );
+        }
+
+        if (Arr::has($_POST, Constants::ALLOWED_RISK_SCORE_OPTION)) {
+            update_option(
+                Constants::ALLOWED_RISK_SCORE_OPTION,
+                floatval($_POST[Constants::ALLOWED_RISK_SCORE_OPTION])
             );
         }
 

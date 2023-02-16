@@ -50,6 +50,7 @@ class Constants
     public const ACCOUNT_DETAILS_OPTION = 'cws5baddi_account_details';
     public const LAST_ACCOUNT_DETAILS_UPDATE_OPTION = 'cws5baddi_last_account_details_update';
     public const API_MODE_OPTION = 'cws5baddi_api_mode';
+    public const ALLOWED_RISK_SCORE_OPTION = 'cws5baddi_allowed_risk_score';
 
     public const PROFIT_MARGIN_AMOUNT = 1;
     public const PROFIT_MARGIN_PERCENTAGE = 2;
@@ -71,6 +72,7 @@ class Constants
     public const DEFAULT_RISK_SCORE_VALUE = 2;
     public const DEFAULT_PRODUCT_DESCRIPTION_LANGUAGE = 'en';
     public const DEFAULT_GRANT_TYPE = 'client_credentials';
+    public const DEFAULT_ALLOWED_RISK_SCORE = 1.5;
 
     public const CURRENCIES_LIST = [
         "AFA" => "Afghan Afghani",

@@ -47,6 +47,7 @@ class CodesWholesaleService
     public const PLATFORMS_ENDPOINT = '/v2/platforms';
     public const ORDERS_ENDPOINT = '/v2/orders';
     public const ORDER_INVOICE_ENDPOINT = '/v2/orders/{orderId}/invoice';
+    public const SECURITY_ENDPOINT = '/v2/security';
 
     public const NEW_PRODUCT_WEBHOOK_EVENT = 'NEW_PRODUCT';
     public const PRODUCT_UPDATED_WEBHOOK_EVENT = 'PRODUCT_UPDATED';
@@ -291,6 +292,34 @@ class CodesWholesaleService
                     'headers' => [
                         'Authorization' => sprintf('Bearer %s', $token)
                     ]
+                ]
+            );
+
+            if ($response->getStatusCode() !== 200) {
+                return [];
+            }
+
+            return $this->fromJson($response);
+        } catch (Throwable $e) {
+            return [];
+        }
+    }
+
+    public function checkCustomerRiskScore(string $token, string $email, string $agent, string $ip): array
+    {
+        try {
+            $response = $this->client->post(
+                self::SECURITY_ENDPOINT,
+                [
+                    'headers' => [
+                        'Authorization' => sprintf('Bearer %s', $token)
+                    ],
+                    'json'    => [
+                        'customerEmail'        => $email,
+                        'customerPaymentEmail' => $email,
+                        'customerUserAgent'    => $agent,
+                        'customerIpAddress'    => $ip,
+                    ],
                 ]
             );
 
