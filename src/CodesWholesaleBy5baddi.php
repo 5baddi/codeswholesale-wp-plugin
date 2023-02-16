@@ -19,6 +19,7 @@ use BaddiServices\CodesWholesale\Core\StyleEnqueuer;
 use BaddiServices\CodesWholesale\Traits\TimberTrait;
 use BaddiServices\CodesWholesale\Core\ScriptEnqueuer;
 use BaddiServices\CodesWholesale\Traits\ProductTrait;
+use BaddiServices\CodesWholesale\Traits\WooCommerceTrait;
 use BaddiServices\CodesWholesale\Traits\ApplyFiltersTrait;
 use BaddiServices\CodesWholesale\Traits\CodesWholesaleTrait;
 
@@ -34,6 +35,7 @@ use BaddiServices\CodesWholesale\Traits\CodesWholesaleTrait;
 class CodesWholesaleBy5baddi
 {
     use AdminTrait, TimberTrait, CodesWholesaleTrait, ProductTrait, ApplyFiltersTrait;
+    use WooCommerceTrait;
 
     public const SLUG = 'codeswholesale-by-5baddi';
     public const NAMESPACE = 'cws5baddi';
@@ -89,8 +91,11 @@ class CodesWholesaleBy5baddi
             add_action('admin_enqueue_scripts', [$this, 'registerAdminStylesAndScripts']);
         }
 
-        // Post filter
+        // Before render the post
         add_action('the_post', [$this, 'doubleCheckProductPrice'], 1);
+
+        // Before wc checkout process
+        add_action('woocommerce_before_checkout_process', [$this, 'beforeCheckoutProcess']);
 
         // Filters
         // Timber twig filter
