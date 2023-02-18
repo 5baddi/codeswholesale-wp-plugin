@@ -70,4 +70,9 @@ trait WooCommerceTrait
             );
         }
     }
+
+    public function paymentCompleteOrderStatusCompleted(int $orderId)
+    {
+
+    }
 }
