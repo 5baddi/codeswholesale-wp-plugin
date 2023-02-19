@@ -43,7 +43,23 @@ trait CodesWholesaleTrait
             ) {
                 AuthService::createCodesWholesaleToken();
             }
+
+            if (
+                ! empty($values[Constants::BEARER_TOKEN_OPTION])
+                && ! AuthService::isTokenExpired($expiresIn)
+            ) {
+                /** @var CodesWholesaleService */
+                $codesWholesaleService = Container::get(CodesWholesaleService::class);
+
+                $token = get_option(Constants::BEARER_TOKEN_OPTION, '');
+                $accountDetails = $codesWholesaleService->getAccountDetails($token);
+
+                update_option(Constants::ACCOUNT_DETAILS_OPTION, json_encode($accountDetails ?? '{}'));
+            }
         } catch (UnauthorizedException $e) {
+            update_option(Constants::BEARER_TOKEN_OPTION, '');
+            update_option(Constants::BEARER_TOKEN_EXPIRES_IN_OPTION, 0);
+
             if ($tries < $tried) {
                 return $this->authenticate($tries, ++$tried);
             }
@@ -64,11 +80,6 @@ trait CodesWholesaleTrait
             $codesWholesaleService = Container::get(CodesWholesaleService::class);
 
             $languages = $codesWholesaleService->getSupportedProductDescriptionLanguages($values[Constants::BEARER_TOKEN_OPTION]);
-            if (empty($languages)) {
-                AuthService::createCodesWholesaleToken();
-
-                $languages = $codesWholesaleService->getSupportedProductDescriptionLanguages($values[Constants::BEARER_TOKEN_OPTION]);
-            }
 
             update_option(
                 Constants::SUPPORTED_PRODUCT_DESCRIPTION_LANGUAGES_OPTION,
@@ -91,11 +102,6 @@ trait CodesWholesaleTrait
             $codesWholesaleService = Container::get(CodesWholesaleService::class);
 
             $regions = $codesWholesaleService->getSupportedRegions($values[Constants::BEARER_TOKEN_OPTION]);
-            if (empty($regions)) {
-                AuthService::createCodesWholesaleToken();
-
-                $regions = $codesWholesaleService->getSupportedRegions($values[Constants::BEARER_TOKEN_OPTION]);
-            }
 
             update_option(
                 Constants::SUPPORTED_REGIONS_OPTION,
@@ -118,11 +124,6 @@ trait CodesWholesaleTrait
             $codesWholesaleService = Container::get(CodesWholesaleService::class);
 
             $territories = $codesWholesaleService->getSupportedTerritories($values[Constants::BEARER_TOKEN_OPTION]);
-            if (empty($territories)) {
-                AuthService::createCodesWholesaleToken();
-
-                $territories = $codesWholesaleService->getSupportedTerritories($values[Constants::BEARER_TOKEN_OPTION]);
-            }
 
             update_option(
                 Constants::SUPPORTED_TERRITORIES_OPTION,
@@ -145,11 +146,6 @@ trait CodesWholesaleTrait
             $codesWholesaleService = Container::get(CodesWholesaleService::class);
 
             $platforms = $codesWholesaleService->getSupportedPlatforms($values[Constants::BEARER_TOKEN_OPTION]);
-            if (empty($platforms)) {
-                AuthService::createCodesWholesaleToken();
-
-                $platforms = $codesWholesaleService->getSupportedPlatforms($values[Constants::BEARER_TOKEN_OPTION]);
-            }
 
             update_option(
                 Constants::SUPPORTED_PLATFORMS_OPTION,

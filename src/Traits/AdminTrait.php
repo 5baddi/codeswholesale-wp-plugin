@@ -113,19 +113,7 @@ trait AdminTrait
     public function renderAccountDetailsPage(): void
     {
         $data = [];
-        $accountDetails = [];
         $token = get_option(Constants::BEARER_TOKEN_OPTION, '');
-        $lastUpdate = intval(get_option(Constants::LAST_ACCOUNT_DETAILS_UPDATE_OPTION, 0));
-
-        if (! empty($token) || $lastUpdate < strtotime('+15 minutes', time())) {
-            /** @var CodesWholesaleService */
-            $codesWholesaleService = Container::get(CodesWholesaleService::class);
-
-            $accountDetails = $codesWholesaleService->getAccountDetails($token);
-
-            update_option(Constants::ACCOUNT_DETAILS_OPTION, json_encode($accountDetails ?? '{}'));
-            update_option(Constants::LAST_ACCOUNT_DETAILS_UPDATE_OPTION, time());
-        }
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && check_admin_referer($this->getGroupName())) {
             $this->saveAccountDetails();
@@ -348,8 +336,6 @@ trait AdminTrait
             Constants::API_CLIENT_SIGNATURE_OPTION,
             sanitize_text_field($_POST[Constants::API_CLIENT_SIGNATURE_OPTION] ?? '')
         );
-
-        AuthService::createCodesWholesaleToken();
     }
 
     private function saveGeneralSettings(): void

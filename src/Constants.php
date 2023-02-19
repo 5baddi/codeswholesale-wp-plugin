@@ -48,7 +48,6 @@ class Constants
     public const SUPPORTED_TERRITORIES_OPTION = 'cws5baddi_supported_territories';
     public const SUPPORTED_PLATFORMS_OPTION = 'cws5baddi_supported_platforms';
     public const ACCOUNT_DETAILS_OPTION = 'cws5baddi_account_details';
-    public const LAST_ACCOUNT_DETAILS_UPDATE_OPTION = 'cws5baddi_last_account_details_update';
     public const API_MODE_OPTION = 'cws5baddi_api_mode';
     public const ALLOWED_RISK_SCORE_OPTION = 'cws5baddi_allowed_risk_score';
 
