@@ -110,7 +110,9 @@ trait WooCommerceTrait
             ];
         }
 
-        $createdCwsOrder = $codesWholesaleService->createOrder($token, $orderId, $products, true);
+        $preOrderAllowed = boolval(get_option(Constants::ALLOW_PRE_ORDER_OPTION, 1));
+        $createdCwsOrder = $codesWholesaleService->createOrder($token, $orderId, $products, $preOrderAllowed);
+
         if (! empty($createdCwsOrder)) {
             add_post_meta($orderId, Order::CWS_ORDER_META_DATA, json_encode($createdCwsOrder));
         }

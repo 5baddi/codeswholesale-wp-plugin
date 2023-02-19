@@ -197,7 +197,7 @@ trait AdminTrait
         if (! empty($token)) {
             /** @var CodesWholesaleService */
             $codesWholesaleService = Container::get(CodesWholesaleService::class);
-    
+
             $results = $codesWholesaleService->getOrders($token);
 
             $table
@@ -240,7 +240,7 @@ trait AdminTrait
 
         switch ($_GET['page']) {
             case sprintf('%s-import-products', CodesWholesaleBy5baddi::SLUG):
-                
+
                 break;
         }
     }
@@ -301,6 +301,8 @@ trait AdminTrait
             => get_option(Constants::API_MODE_OPTION, Constants::API_SANDBOX_MODE),
             Constants::ALLOWED_RISK_SCORE_OPTION
             => floatval(get_option(Constants::ALLOWED_RISK_SCORE_OPTION, Constants::DEFAULT_ALLOWED_RISK_SCORE)),
+            Constants::ALLOW_PRE_ORDER_OPTION
+            => boolval(get_option(Constants::ALLOW_PRE_ORDER_OPTION, 1)),
         ];
     }
 
@@ -365,6 +367,13 @@ trait AdminTrait
             update_option(
                 Constants::DOUBLE_CHECK_PRICE_OPTION,
                 intval($_POST[Constants::DOUBLE_CHECK_PRICE_OPTION])
+            );
+        }
+
+        if (Arr::has($_POST, Constants::ALLOW_PRE_ORDER_OPTION)) {
+            update_option(
+                Constants::ALLOW_PRE_ORDER_OPTION,
+                intval($_POST[Constants::ALLOW_PRE_ORDER_OPTION])
             );
         }
 

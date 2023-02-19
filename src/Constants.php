@@ -50,6 +50,7 @@ class Constants
     public const ACCOUNT_DETAILS_OPTION = 'cws5baddi_account_details';
     public const API_MODE_OPTION = 'cws5baddi_api_mode';
     public const ALLOWED_RISK_SCORE_OPTION = 'cws5baddi_allowed_risk_score';
+    public const ALLOW_PRE_ORDER_OPTION = 'cws5baddi_allow_pre_order';
 
     public const PROFIT_MARGIN_AMOUNT = 1;
     public const PROFIT_MARGIN_PERCENTAGE = 2;

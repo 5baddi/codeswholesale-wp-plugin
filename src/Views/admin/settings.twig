@@ -118,6 +118,19 @@
 				</tr>
 				<tr>
 					<th scope="row">
+						<label for="cws5baddi_allow_pre_order">{{ 'Allow Pre-Order'|translate }}</label>
+					</th>
+					<td>
+						<label for="cws5baddi_allow_pre_order">
+							<input name="cws5baddi_allow_pre_order" type="checkbox" id="cws5baddi_allow_pre_order" value="1" {% if values.cws5baddi_allow_pre_order == true %} checked {% endif %}/>
+						</label>
+						<p class="description" id="cws5baddi_allow_pre_orders_description">
+							{{ 'Allow CodesWholesale Pre-Order.'|translate }}
+						</p>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">
 						<label for="cws5baddi_hide_products">{{ 'Hide products'|translate }}</label>
 					</th>
 					<td>

@@ -33,7 +33,7 @@ class CodesWholesaleService
     public const LIVE_API_URL = 'https://api.codeswholesale.com';
     public const SANDBOX_API_URL = 'https://sandbox.codeswholesale.com';
     public const GRANT_TYPE = 'client_credentials';
-    
+
     public const SANDBOX_CLIENT_ID = 'ff72ce315d1259e822f47d87d02d261e';
     public const SANDBOX_CLIENT_SECRET = '$2a$10$E2jVWDADFA5gh6zlRVcrlOOX01Q/HJoT6hXuDMJxek.YEo.lkO2T6';
 
