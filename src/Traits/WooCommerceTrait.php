@@ -12,9 +12,13 @@
 
 namespace BaddiServices\CodesWholesale\Traits;
 
+use WC_Order;
+use WC_Product_Simple;
 use Illuminate\Support\Arr;
 use BaddiServices\CodesWholesale\Constants;
+use BaddiServices\CodesWholesale\Models\Order;
 use BaddiServices\CodesWholesale\Core\Container;
+use BaddiServices\CodesWholesale\Models\Product;
 use BaddiServices\CodesWholesale\Services\Domains\CodesWholesaleService;
 
 /**
@@ -71,8 +75,44 @@ trait WooCommerceTrait
         }
     }
 
-    public function paymentCompleteOrderStatusCompleted(int $orderId)
+    public function orderCompletePayment()
     {
+        if (! Arr::has($_GET, 'key')) {
+            return;
+        }
 
+        $orderId = wc_get_order_id_by_order_key($_GET['key']);
+
+        /** @var WC_Order */
+        $order = wc_get_order($orderId);
+        $token = get_option(Constants::BEARER_TOKEN_OPTION, '');
+        $products = [];
+
+        if (! $order instanceof WC_Order || empty($token)) {
+            return;
+        }
+
+        /** @var CodesWholesaleService */
+        $codesWholesaleService = Container::get(CodesWholesaleService::class);
+
+        foreach($order->get_items() as $item) {
+            /** @var WC_Product_Simple */
+            $product = wc_get_product($item->get_product_id());
+
+            if (! $product instanceof WC_Product_Simple) {
+                continue;
+            }
+
+            $products[] = [
+                'productId' => $product->get_meta(Product::UUID_META_DATA),
+                'price'     => floatval($product->get_meta(Product::PRICE_META_DATA)),
+                'quantity'  => intval($item->get_quantity()),
+            ];
+        }
+
+        $createdCwsOrder = $codesWholesaleService->createOrder($token, $orderId, $products, true);
+        if (! empty($createdCwsOrder)) {
+            add_post_meta($orderId, Order::CWS_ORDER_META_DATA, json_encode($createdCwsOrder));
+        }
     }
 }

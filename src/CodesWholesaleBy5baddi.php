@@ -97,8 +97,8 @@ class CodesWholesaleBy5baddi
         // Before wc checkout process
         add_action('woocommerce_before_checkout_process', [$this, 'beforeCheckoutProcess']);
 
-        // After wc compeleted order payment
-        add_action('woocommerce_payment_complete_order_status_completed', [$this, 'paymentCompleteOrderStatusCompleted']);
+        // Custom redirect
+        add_action('template_redirect', [$this, 'customTemplateRedirect']);
 
         // Filters
         // Timber twig filter
@@ -117,8 +117,10 @@ class CodesWholesaleBy5baddi
         $this->fetchSupportedPlatforms();
 
         // Force customer to create/signin account for backdoor
-        update_option('woocommerce_enable_guest_checkout', 'no');
-        // woocommerce_payment_complete_order_status_completed hook
+        $wcGuestCheckoutDisabled = get_option('woocommerce_enable_guest_checkout', '');
+        if ($wcGuestCheckoutDisabled !== 'no') {
+            update_option('woocommerce_enable_guest_checkout', 'no');
+        }
     }
 
     public function initRestApiRoutes(): void
@@ -161,5 +163,10 @@ class CodesWholesaleBy5baddi
                 $scriptEnqueuer->enqueueGlobalJsObject();
             }
         }
+    }
+
+    public function customTemplateRedirect()
+    {
+        $this->orderCompletePayment();
     }
 }

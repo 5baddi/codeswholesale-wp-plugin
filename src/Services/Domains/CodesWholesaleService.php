@@ -333,6 +333,33 @@ class CodesWholesaleService
         }
     }
 
+    public function createOrder(string $token, int $orderId, array $products = [], bool $allowPreOrder = false): array
+    {
+        try {
+            $response = $this->client->post(
+                self::ORDERS_ENDPOINT,
+                [
+                    'headers' => [
+                        'Authorization' => sprintf('Bearer %s', $token)
+                    ],
+                    'json'    => [
+                        'orderId'       => $orderId,
+                        'products'      => $products,
+                        'allowPreOrder' => $allowPreOrder
+                    ],
+                ]
+            );
+
+            if ($response->getStatusCode() !== 200) {
+                return [];
+            }
+
+            return $this->fromJson($response);
+        } catch (Throwable $e) {var_dump($e->getMessage());die();
+            return [];
+        }
+    }
+
     private function fromJson(?ResponseInterface $response = null): ?array
     {
         if (empty($response)) {

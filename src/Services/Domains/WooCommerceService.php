@@ -17,6 +17,7 @@ use WC_Product_Simple;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use BaddiServices\CodesWholesale\Constants;
+use BaddiServices\CodesWholesale\Models\Product;
 
 /**
  * Class WooCommerceService.
@@ -53,7 +54,7 @@ class WooCommerceService
         }
 
         $name = sanitize_text_field($attributes['name']);
-        $product = new WC_Product_Simple();
+        $product = new Product();
         $existsProduct = null;
 
         $productId = wc_get_product_id_by_sku($attributes['identifier']);
@@ -69,7 +70,7 @@ class WooCommerceService
         $product->set_name($name);
         $product->set_slug(Str::lower(Str::slug($name)));
         $product->set_sku(sanitize_text_field($attributes['identifier']));
-        $product->add_meta_data('cws_product_uuid', sanitize_text_field($attributes['productId']), true);
+        $product->add_meta_data(Product::UUID_META_DATA, sanitize_text_field($attributes['productId']), true);
 
         if (! empty($attributes['quantity'])) {
             $this->setQuantity($product, $attributes['quantity']);
@@ -137,9 +138,10 @@ class WooCommerceService
         }
 
         $price = $price['value'] ?? 0;
-        $price = self::calculatePriceWithProfit($price);
+        $priceWithProfit = self::calculatePriceWithProfit($price);
 
-        $product->set_regular_price($price);
+        $product->add_meta_data(Product::PRICE_META_DATA, $price, true);
+        $product->set_regular_price($priceWithProfit);
     }
 
     private function setCategoriesByName(WC_Product_Simple $product, array $categoriesNames = []): void
