@@ -92,6 +92,11 @@ trait WooCommerceTrait
             return;
         }
 
+        $orderCwsMetaData = get_post_meta($orderId, Order::CWS_ORDER_META_DATA, true);
+        if (! empty($orderCwsMetaData)) {
+            return;
+        }
+
         /** @var CodesWholesaleService */
         $codesWholesaleService = Container::get(CodesWholesaleService::class);
 
@@ -114,7 +119,7 @@ trait WooCommerceTrait
         $createdCwsOrder = $codesWholesaleService->createOrder($token, $orderId, $products, $preOrderAllowed);
 
         if (! empty($createdCwsOrder)) {
-            add_post_meta($orderId, Order::CWS_ORDER_META_DATA, json_encode($createdCwsOrder));
+            add_post_meta($orderId, Order::CWS_ORDER_META_DATA, json_encode($createdCwsOrder), true);
         }
     }
 }
