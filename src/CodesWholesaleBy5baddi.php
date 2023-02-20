@@ -107,8 +107,8 @@ class CodesWholesaleBy5baddi
         // Only allowed origins
         add_filter('rest_authentication_errors', [$this, 'restAuthenticationErrors']);
 
-        // Protect custom fields
-        add_filter('is_protected_meta', [$this, 'protectCustomMetaFields'], 10, 2);
+        // Protect hidden custom fields
+        add_filter('is_protected_meta', [$this, 'protectHiddenCustomMetaFields'], 10, 2);
     }
 
     public function pluginsLoaded(): void
