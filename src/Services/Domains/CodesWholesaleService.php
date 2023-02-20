@@ -359,7 +359,7 @@ class CodesWholesaleService
             }
 
             return $this->fromJson($response);
-        } catch (Throwable $e) {var_dump($e->getMessage());die();
+        } catch (Throwable $e) {
             return [];
         }
     }
