@@ -88,21 +88,25 @@ class OrdersHistoryTable extends BaseListTable
 
     public function column_identifier($item)
     {
-        $actions = [
-            // 'view'  => sprintf(
-            //     '<a href="?page=%s&action=view-order&id=%s">%s</a>', 
-            //     $_REQUEST['page'],
-            //     $item['orderId'],
-            //     cws5baddiTranslation('View details')
-            // ),
-            'invoice'  => sprintf(
-                '<a href="javascript:void(0);" class="%s-download-invoice" data-id="%s" data-name="%s">%s</a>', 
-                CodesWholesaleBy5baddi::NAMESPACE,
-                $item['orderId'],
-                $item['identifier'],
-                cws5baddiTranslation('Download invoice')
-            ),
-        ];
+        $actions = [];
+
+        if (! empty($item['clientOrderId']) && is_int($item['clientOrderId'])) {
+            $actions = [
+                'view'  => sprintf(
+                    '<a href="%s">%s</a>', 
+                    admin_url(sprintf('post.php?action=edit&post=%d', intval($item['clientOrderId']))),
+                    cws5baddiTranslation('View details')
+                ),
+            ];
+        }
+
+        $actions['invoice'] = sprintf(
+            '<a href="javascript:void(0);" class="%s-download-invoice" data-id="%s" data-name="%s">%s</a>', 
+            CodesWholesaleBy5baddi::NAMESPACE,
+            $item['orderId'],
+            $item['identifier'],
+            cws5baddiTranslation('Download invoice')
+        );
 
         return sprintf('%s %s', $item['identifier'], $this->row_actions($actions));
     }
