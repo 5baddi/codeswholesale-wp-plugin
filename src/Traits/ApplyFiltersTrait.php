@@ -14,6 +14,8 @@ namespace BaddiServices\CodesWholesale\Traits;
 
 use WP_Error;
 use BaddiServices\CodesWholesale\Constants;
+use BaddiServices\CodesWholesale\Models\Order;
+use BaddiServices\CodesWholesale\Models\Product;
 
 /**
  * Trait ApplyFiltersTrait.
@@ -40,5 +42,12 @@ trait ApplyFiltersTrait
         }
 
         return $errors;
+    }
+
+    public function protectCustomMetaFields(bool $isProtected, string $metaKey): bool
+    {
+        return in_array($metaKey, [Product::PRICE_META_DATA, Product::UUID_META_DATA, Order::CWS_ORDER_META_DATA])
+            ? true
+            : $isProtected;
     }
 }
