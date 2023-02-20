@@ -19,6 +19,7 @@ use Illuminate\Support\Arr;
 use BaddiServices\CodesWholesale\Logger;
 use BaddiServices\CodesWholesale\Constants;
 use BaddiServices\CodesWholesale\Core\Container;
+use BaddiServices\CodesWholesale\Models\Product;
 use BaddiServices\CodesWholesale\Services\Domains\WooCommerceService;
 use BaddiServices\CodesWholesale\Services\Domains\CodesWholesaleService;
 
@@ -68,8 +69,9 @@ trait ProductTrait
                 $currentPrice = $product->get_regular_price() ?? 0;
                 $newPrice = WooCommerceService::calculatePriceWithProfit(Arr::get($cwsProduct, 'prices.0.value', 0));
 
-                if ($currentPrice < $newPrice) {
+                if (empty($product->get_meta(Product::PRICE_META_DATA)) || $currentPrice < $newPrice) {
                     $product->set_regular_price($newPrice);
+                    $product->add_meta_data(Product::PRICE_META_DATA, Arr::get($cwsProduct, 'prices.0.value', 0), true);
                     $product->save();
                 }
             }

@@ -12,6 +12,7 @@
 
 namespace BaddiServices\CodesWholesale\Tables;
 
+use WP_Post;
 use Illuminate\Support\Str;
 use BaddiServices\CodesWholesale\Core\BaseListTable;
 use BaddiServices\CodesWholesale\CodesWholesaleBy5baddi;
@@ -90,10 +91,10 @@ class OrdersHistoryTable extends BaseListTable
     {
         $actions = [];
 
-        if (! empty($item['clientOrderId']) && is_int($item['clientOrderId'])) {
+        if (! empty($item['clientOrderId']) && (get_post($item['clientOrderId']) instanceof WP_Post)) {
             $actions = [
                 'view'  => sprintf(
-                    '<a href="%s">%s</a>', 
+                    '<a href="%s">%s</a>',
                     admin_url(sprintf('post.php?action=edit&post=%d', intval($item['clientOrderId']))),
                     cws5baddiTranslation('View details')
                 ),
@@ -101,7 +102,7 @@ class OrdersHistoryTable extends BaseListTable
         }
 
         $actions['invoice'] = sprintf(
-            '<a href="javascript:void(0);" class="%s-download-invoice" data-id="%s" data-name="%s">%s</a>', 
+            '<a href="javascript:void(0);" class="%s-download-invoice" data-id="%s" data-name="%s">%s</a>',
             CodesWholesaleBy5baddi::NAMESPACE,
             $item['orderId'],
             $item['identifier'],
