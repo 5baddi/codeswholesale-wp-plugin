@@ -19,6 +19,8 @@ use BaddiServices\CodesWholesale\Constants;
 use BaddiServices\CodesWholesale\Models\Order;
 use BaddiServices\CodesWholesale\Core\Container;
 use BaddiServices\CodesWholesale\Models\Product;
+use BaddiServices\CodesWholesale\Services\AuthService;
+use BaddiServices\CodesWholesale\Exceptions\UnauthorizedException;
 use BaddiServices\CodesWholesale\Services\Domains\CodesWholesaleService;
 
 /**
@@ -60,8 +62,15 @@ trait WooCommerceTrait
 
         $token = get_option(Constants::BEARER_TOKEN_OPTION, '');
         $allowedRiskScore = floatval(get_option(Constants::ALLOWED_RISK_SCORE_OPTION, Constants::DEFAULT_ALLOWED_RISK_SCORE));
+        $customerSecurityCheck = [];
 
-        $customerSecurityCheck = $codesWholesaleService->checkCustomerRiskScore($token, $customerEmail, $customerAgent, $customerIp);
+        try {
+            $customerSecurityCheck = $codesWholesaleService->checkCustomerRiskScore($token, $customerEmail, $customerAgent, $customerIp);
+        } catch (UnauthorizedException $e) {
+            AuthService::createCodesWholesaleToken();
+
+            $customerSecurityCheck = $codesWholesaleService->checkCustomerRiskScore($token, $customerEmail, $customerAgent, $customerIp);
+        }
 
         if (
             empty($token)
@@ -116,7 +125,15 @@ trait WooCommerceTrait
         }
 
         $preOrderAllowed = boolval(get_option(Constants::ALLOW_PRE_ORDER_OPTION, 1));
-        $createdCwsOrder = $codesWholesaleService->createOrder($token, $orderId, $products, $preOrderAllowed);
+        $createdCwsOrder = [];
+
+        try {
+            $createdCwsOrder = $codesWholesaleService->createOrder($token, $orderId, $products, $preOrderAllowed);
+        } catch (UnauthorizedException $e) {
+            AuthService::createCodesWholesaleToken();
+
+            $createdCwsOrder = $codesWholesaleService->createOrder($token, $orderId, $products, $preOrderAllowed);
+        }
 
         if (! empty($createdCwsOrder)) {
             add_post_meta($orderId, Order::CWS_ORDER_META_DATA, json_encode($createdCwsOrder), true);

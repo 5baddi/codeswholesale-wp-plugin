@@ -333,6 +333,10 @@ class CodesWholesaleService
 
             return $this->fromJson($response);
         } catch (Throwable $e) {
+            if ($e->getCode() === 401) {
+                throw new UnauthorizedException('Unauthorized', 401, $e);
+            }
+
             return [];
         }
     }
@@ -360,6 +364,10 @@ class CodesWholesaleService
 
             return $this->fromJson($response);
         } catch (Throwable $e) {
+            if ($e->getCode() === 401) {
+                throw new UnauthorizedException('Unauthorized', 401, $e);
+            }
+
             return [];
         }
     }
