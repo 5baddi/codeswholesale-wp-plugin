@@ -135,8 +135,8 @@ trait WooCommerceTrait
             $createdCwsOrder = $codesWholesaleService->createOrder($token, $orderId, $products, $preOrderAllowed);
         }
 
-        if (! empty($createdCwsOrder)) {
-            add_post_meta($orderId, Order::CWS_ORDER_META_DATA, json_encode($createdCwsOrder), true);
+        if ($createdCwsOrder instanceof Order) {
+            add_post_meta($orderId, Order::CWS_ORDER_META_DATA, $createdCwsOrder->toJson(), true);
         }
     }
 }

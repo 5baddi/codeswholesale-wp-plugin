@@ -12,11 +12,12 @@
 
 namespace BaddiServices\CodesWholesale\Services\Domains;
 
-use BaddiServices\CodesWholesale\Constants;
 use Throwable;
 use GuzzleHttp\Client;
 use Illuminate\Support\Str;
 use Psr\Http\Message\ResponseInterface;
+use BaddiServices\CodesWholesale\Constants;
+use BaddiServices\CodesWholesale\Models\Order;
 use BaddiServices\CodesWholesale\Exceptions\UnauthorizedException;
 
 /**
@@ -341,7 +342,7 @@ class CodesWholesaleService
         }
     }
 
-    public function createOrder(string $token, int $orderId, array $products = [], bool $allowPreOrder = false): array
+    public function createOrder(string $token, int $orderId, array $products = [], bool $allowPreOrder = false): ?Order
     {
         try {
             $response = $this->client->post(
@@ -359,16 +360,16 @@ class CodesWholesaleService
             );
 
             if ($response->getStatusCode() !== 200) {
-                return [];
+                return null;
             }
 
-            return $this->fromJson($response);
+            return Order::fromArray($this->fromJson($response));
         } catch (Throwable $e) {
             if ($e->getCode() === 401) {
                 throw new UnauthorizedException('Unauthorized', 401, $e);
             }
 
-            return [];
+            return null;
         }
     }
 
