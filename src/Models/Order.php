@@ -116,7 +116,7 @@ class Order
         return $order;
     }
 
-    public function toArray(): array
+    public function toArray(bool $withCasting = true): array
     {
         $result = [];
 
@@ -131,11 +131,13 @@ class Order
                 $parsedValue = $this->id;
             }
 
-            switch ($key) {
-                case self::CWS_ORDER_CREATED_ON:
-                    $parsedValue = date('c', $this->createdOn);
-
-                    break;
+            if ($withCasting) {
+                switch ($key) {
+                    case self::CWS_ORDER_CREATED_ON:
+                        $parsedValue = date('c', $this->createdOn);
+    
+                        break;
+                }
             }
 
             $result[$key] = $parsedValue;

@@ -14,6 +14,7 @@ namespace BaddiServices\CodesWholesale\Tables;
 
 use WP_Post;
 use Illuminate\Support\Str;
+use BaddiServices\CodesWholesale\Models\Order;
 use BaddiServices\CodesWholesale\Core\BaseListTable;
 use BaddiServices\CodesWholesale\CodesWholesaleBy5baddi;
 
@@ -41,9 +42,9 @@ class OrdersHistoryTable extends BaseListTable
     public function get_sortable_columns(): array
     {
         return [
-            'identifier'    => ['identifier', true],
-            'totalPrice'    => ['totalPrice', true],
-            'status'        => ['status', true],
+            'identifier'    => 'identifier',
+            'totalPrice'    => 'totalPrice',
+            'status'        => 'status',
             'createdOn'     => ['createdOn', true],
         ];
     }
@@ -57,7 +58,7 @@ class OrdersHistoryTable extends BaseListTable
                 $value = number_format($value, 2, '.', ' ');
                 break;
             case 'createdOn':
-                $value = date('Y/m/d H:i', strtotime($value));
+                $value = date('Y/m/d H:i', is_int($value) ? $value : strtotime($value));
                 break;
         }
 
@@ -110,5 +111,16 @@ class OrdersHistoryTable extends BaseListTable
         );
 
         return sprintf('%s %s', $item['identifier'], $this->row_actions($actions));
+    }
+
+    public function setData(array $data): self
+    {
+        $parsedData = array_map(function ($item) {
+            $parsedItem = Order::fromArray($item);
+
+            return $parsedItem->toArray(false);
+        }, $data);
+
+        return parent::setData($parsedData);
     }
 }
