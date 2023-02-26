@@ -2,7 +2,9 @@
 
 All notable changes to this plugin are listed bellow:
 
-## 0.4 | 2023-02-26
+## 0.4.0
+
+26 February 2023
 
 ### Features
 
