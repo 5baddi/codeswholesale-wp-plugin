@@ -118,8 +118,8 @@ trait WooCommerceTrait
             }
 
             $products[] = [
-                'productId' => $product->get_meta(Product::UUID_META_DATA),
-                'price'     => floatval($product->get_meta(Product::PRICE_META_DATA)),
+                'productId' => $product->get_meta(Product::UUID_META_DATA, true),
+                'price'     => floatval($product->get_meta(Product::PRICE_META_DATA, true)),
                 'quantity'  => intval($item->get_quantity()),
             ];
         }
@@ -138,5 +138,18 @@ trait WooCommerceTrait
         if ($createdCwsOrder instanceof Order) {
             add_post_meta($orderId, Order::CWS_ORDER_META_DATA, $createdCwsOrder->toJson(), true);
         }
+    }
+
+    public function setOrderItemNeedsProcessing(bool $needsProcesing, WC_Product_Simple $product): bool
+    {
+        if (
+            $product->is_downloadable()
+            && $product->is_virtual()
+            && ! empty($product->get_meta(Product::UUID_META_DATA, true))
+        ) {
+            return true;
+        }
+
+        return $needsProcesing;
     }
 }

@@ -101,8 +101,11 @@ class CodesWholesaleBy5baddi
         add_action('template_redirect', [$this, 'customTemplateRedirect']);
 
         // Define custom general product data meta boxes
-        add_action('woocommerce_product_options_general_product_data', [$this, 'defineCustomGeneralProductDataMetaBoxes']);
+        add_action('woocommerce_product_options_general_prosetOrderItemToProcessingduct_data', [$this, 'defineCustomGeneralProductDataMetaBoxes']);
         add_action('woocommerce_process_product_meta', [$this, 'processCustomProductMeta']);
+
+        // Set order with virtual products as needs processing
+        add_action('woocommerce_order_item_needs_processing', [$this, 'setOrderItemNeedsProcessing'], 10, 2);
 
         // Filters
         // Timber twig filter
@@ -113,6 +116,9 @@ class CodesWholesaleBy5baddi
 
         // Protect hidden custom fields
         add_filter('is_protected_meta', [$this, 'protectHiddenCustomMetaFields'], 10, 2);
+
+        // List available downloads
+        // add_filter('woocommerce_customer_available_downloads', [$this, 'customerAvailableDownloads'], 10, 2);
     }
 
     public function pluginsLoaded(): void

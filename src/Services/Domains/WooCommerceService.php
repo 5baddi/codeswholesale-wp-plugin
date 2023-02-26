@@ -67,6 +67,7 @@ class WooCommerceService
         }
 
         $product->set_virtual(true);
+        $product->set_downloadable(true);
         $product->set_name($name);
         $product->set_slug(Str::lower(Str::slug($name)));
         $product->set_sku(sanitize_text_field($attributes['identifier']));
