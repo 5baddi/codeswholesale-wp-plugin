@@ -14,12 +14,14 @@ namespace BaddiServices\CodesWholesale\Traits;
 
 use WP_Post;
 use Throwable;
+use Timber\Timber;
 use WC_Product_Simple;
 use Illuminate\Support\Arr;
 use BaddiServices\CodesWholesale\Logger;
 use BaddiServices\CodesWholesale\Constants;
 use BaddiServices\CodesWholesale\Core\Container;
 use BaddiServices\CodesWholesale\Models\Product;
+use BaddiServices\CodesWholesale\Core\ScriptEnqueuer;
 use BaddiServices\CodesWholesale\Services\Domains\WooCommerceService;
 use BaddiServices\CodesWholesale\Services\Domains\CodesWholesaleService;
 
@@ -55,7 +57,7 @@ trait ProductTrait
             }
 
             if ($product instanceof WC_Product_Simple) {
-                $cwsProductId = $product->get_meta('cws_product_uuid', true);
+                $cwsProductId = $product->get_meta(Product::UUID_META_DATA, true);
             }
 
             if (! empty($cwsProductId)) {
@@ -83,5 +85,48 @@ trait ProductTrait
         remove_action('the_post', [$this, 'doubleCheckProductPrice'], 1);
 
         return $post;
+    }
+
+    public function defineCustomGeneralProductDataMetaBoxes(): void
+    {
+        $productId = get_the_ID();
+        $product = wc_get_product($productId);
+        $token = get_option(Constants::BEARER_TOKEN_OPTION, '');
+
+        if ($product instanceof WC_Product_Simple) {
+            $cwsProductId = $product->get_meta(Product::UUID_META_DATA, true);
+        }
+
+        if (! empty($token)) {
+            /** @var CodesWholesaleService */
+            $codesWholesaleService = Container::get(CodesWholesaleService::class);
+
+            $products = $codesWholesaleService->getProducts($token);
+        }
+        
+        Timber::render(
+            'admin/product/meta-boxes/cws-linked-product.twig',
+            [
+                'productId'    => $productId,
+                'product'      => $product,
+                'cwsProductId' => $cwsProductId ?? null,
+                'products'     => $products['items'] ?? [],
+            ]
+        );
+
+        ScriptEnqueuer::load(sprintf('%sjs/admin/edit-wc-product/main.js', CWS_5BADDI_PLUGIN_ASSETS_PATH))
+            ->loadInFooter()
+            ->enqueue();
+    }
+
+    public function processCustomProductMeta(int $productId): void
+    {
+        $cwsProductId = sanitize_text_field($_POST['cws5baddi_linked_product']);
+        $product = wc_get_product($productId);
+
+        if (! empty($cwsProductId) && $product instanceof WC_Product_Simple) {
+            $product->add_meta_data(Product::UUID_META_DATA, $cwsProductId, true);
+            $product->save();
+        }
     }
 }

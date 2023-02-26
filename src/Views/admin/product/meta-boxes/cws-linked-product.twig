@@ -1,0 +1,21 @@
+{% if products is not empty and products is iterable %}
+{% set currentCwsProductName = '' %}
+<div class="cws5baddi_linked_product options_group show_if_simple show_if_variable">
+	<p class="form-field cws5baddi_linked_product show_if_simple show_if_variable">
+        <datalist id="cws5baddi_products">
+            {% for item in products %}
+            {% if cwsProductId is empty or cwsProductId != item.productId %}
+            <option value="{{ item.name }}" data-product-id="{{ item.productId }}">
+            {% else %}
+            {% set currentCwsProductName = item.name %}
+            {% endif %}
+            {% endfor %}
+        </datalist>
+
+        <label for="cws5baddi_linked_product">{{ function('cws5baddiTranslation', 'CodesWholesale product') }}</label>
+        <input value="{{ currentCwsProductName ?? '' }}" type="text" class="short" list="cws5baddi_products" id="cws5baddi_linked_product"/>
+        <input type="hidden" name="cws5baddi_linked_product" value="{{ cwsProductId }}"/>
+		<span class="description">{{ function('cws5baddiTranslation', 'Linked product on CodesWholesale') }}</span>
+	</p>
+</div>
+{% endif %}

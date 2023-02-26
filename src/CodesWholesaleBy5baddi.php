@@ -100,6 +100,10 @@ class CodesWholesaleBy5baddi
         // Custom redirect
         add_action('template_redirect', [$this, 'customTemplateRedirect']);
 
+        // Define custom general product data meta boxes
+        add_action('woocommerce_product_options_general_product_data', [$this, 'defineCustomGeneralProductDataMetaBoxes']);
+        add_action('woocommerce_process_product_meta', [$this, 'processCustomProductMeta']);
+
         // Filters
         // Timber twig filter
         add_filter('timber/twig', [$this, 'addTwigHelpers']);

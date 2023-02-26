@@ -32,9 +32,8 @@ define('CWS_5BADDI_PLUGIN_ASSETS_PATH', sprintf('%sassets/', CWS_5BADDI_PLUGIN_B
 
 // Should be float value 0.0
 /** @var float */
-define('CWS_5BADDI_PLUGIN_VERSION', '0.3');
-define('CWS_5BADDI_PLUGIN_ASSETS_VERSION', '0.1.5'); 
-define('CWS_5BADDI_PLUGIN_DB_VERSION', '0.1');
+define('CWS_5BADDI_PLUGIN_VERSION', '0.4');
+define('CWS_5BADDI_PLUGIN_ASSETS_VERSION', '0.1.6'); 
 
 if (defined('WP_DEBUG') && WP_DEBUG) {
     opcache_reset();

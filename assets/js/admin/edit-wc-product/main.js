@@ -1,0 +1,1 @@
+jQuery(function(){try{jQuery("#cws5baddi_linked_product").on("change",function(){var d=jQuery(`#cws5baddi_products option[value='${jQuery(this).val()}']`).data("product-id");"string"==typeof d&&0!==d.length&&jQuery("input[name=cws5baddi_linked_product]").val(d)})}catch(d){cws5Baddi.isDebugMode&&console.log(d)}});
