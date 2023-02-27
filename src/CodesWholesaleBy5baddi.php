@@ -101,7 +101,7 @@ class CodesWholesaleBy5baddi
         add_action('template_redirect', [$this, 'customTemplateRedirect']);
 
         // Define custom general product data meta boxes
-        add_action('woocommerce_product_options_general_prosetOrderItemToProcessingduct_data', [$this, 'defineCustomGeneralProductDataMetaBoxes']);
+        add_action('woocommerce_product_options_general_product_data', [$this, 'defineCustomGeneralProductDataMetaBoxes']);
         add_action('woocommerce_process_product_meta', [$this, 'processCustomProductMeta']);
 
         // Set order with virtual products as needs processing

@@ -103,7 +103,7 @@ trait ProductTrait
 
             $products = $codesWholesaleService->getProducts($token);
         }
-        
+
         Timber::render(
             'admin/product/meta-boxes/cws-linked-product.twig',
             [
