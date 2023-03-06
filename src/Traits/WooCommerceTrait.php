@@ -138,6 +138,16 @@ trait WooCommerceTrait
         if ($createdCwsOrder instanceof Order) {
             add_post_meta($orderId, Order::CWS_ORDER_META_DATA, $createdCwsOrder->toJson(), true);
         }
+
+        $isPreOrder = ($createdCwsOrder->status === 'Completed');
+
+        if ($isPreOrder) {
+            $order->update_status('completed');
+        }
+
+        if (! $isPreOrder && ! $preOrderAllowed) {
+            $order->update_status('cancelled', cws5baddiTranslation('Your order has been cancelled! please contact the support...'));
+        }
     }
 
     public function setOrderItemNeedsProcessing(bool $needsProcesing, WC_Product_Simple $product): bool
