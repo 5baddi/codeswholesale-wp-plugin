@@ -113,15 +113,13 @@ trait AdminTrait
     public function renderAccountDetailsPage(): void
     {
         $data = [];
-        $token = get_option(Constants::BEARER_TOKEN_OPTION, '');
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && check_admin_referer($this->getGroupName())) {
             $this->saveAccountDetails();
 
-            $token = get_option(Constants::BEARER_TOKEN_OPTION, '');
-            $expiresIn = get_option(Constants::BEARER_TOKEN_EXPIRES_IN_OPTION, 0);
+            $accountDetails = json_decode(get_option(Constants::ACCOUNT_DETAILS_OPTION, '[]'), true);
 
-            if (empty($token) || AuthService::isTokenExpired($expiresIn)) {
+            if (empty($accountDetails)) {
                 $data['message'] = cws5baddiTranslation('API connection failed! please check your API credentials...');
                 $data['isSuccess'] = false;
             } else {
@@ -339,6 +337,11 @@ trait AdminTrait
             Constants::API_CLIENT_SIGNATURE_OPTION,
             sanitize_text_field($_POST[Constants::API_CLIENT_SIGNATURE_OPTION] ?? '')
         );
+
+        update_option(Constants::BEARER_TOKEN_OPTION, '');
+        update_option(Constants::BEARER_TOKEN_EXPIRES_IN_OPTION, 0);
+
+        $this->authenticate();
     }
 
     private function saveGeneralSettings(): void
