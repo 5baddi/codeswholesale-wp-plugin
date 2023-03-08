@@ -247,7 +247,8 @@ trait AdminTrait
 
     private function isApiConnected(): bool
     {
-        return ! empty(get_option(Constants::BEARER_TOKEN_OPTION, ''));
+        return ! empty($this->settingsValues()[Constants::BEARER_TOKEN_OPTION])
+            && ! empty($this->settingsValues()[Constants::ACCOUNT_DETAILS_OPTION]);
     }
 
     private function settingsValues(): array
