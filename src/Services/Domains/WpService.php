@@ -51,7 +51,7 @@ class WpService
         }
 
         $file = [
-            'name'     => basename($url),
+            'name'     => sprintf('%s_%s', time(), basename($url)),
             'type'     => mime_content_type($tempFile),
             'tmp_name' => $tempFile,
             'size'     => filesize($tempFile),
