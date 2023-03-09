@@ -11,3 +11,5 @@ All notable changes to this plugin are listed bellow:
 - Switch linked product on CodesWholesale.com
 
 ![Screenshot](./docs/screenshots/screenshot2023-02-26_20-06-21.png)
+
+## 0.4.1

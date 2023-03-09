@@ -34,7 +34,7 @@ trait ApplyFiltersTrait
             return $errors;
         }
 
-        $origin = parse_url($_SERVER['HTTP_ORIGIN'], PHP_URL_HOST);
+        $origin = parse_url($_SERVER['HTTP_ORIGIN'] ?? '', PHP_URL_HOST);
         $host = $_SERVER['HTTP_HOST'];
 
         if ($origin !== $host && ! in_array($origin, Constants::ALLOWED_ORIGINS)) {

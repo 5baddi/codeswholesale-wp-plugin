@@ -5,7 +5,7 @@ Plugin Name: CodesWholesale by @5baddi
 Author: 5baddi
 Author URI: http://www.baddi.info/
 Description: WordPress integration with CodesWholesale API.
-Version: 0.3
+Version: 0.4.1
 Text Domain: cws_5baddi
 */
 
@@ -30,10 +30,8 @@ define('CWS_5BADDI_PLUGIN_TEXT_DOMAIN', CWS_5BADDI_PLUGIN_NAME_PERFIX);
 define('CWS_5BADDI_PLUGIN_ASSETS_URL', sprintf('%sassets/', plugin_dir_url(CWS_5BADDI_PLUGIN_BASENAME)));
 define('CWS_5BADDI_PLUGIN_ASSETS_PATH', sprintf('%sassets/', CWS_5BADDI_PLUGIN_BASEPATH));
 
-// Should be float value 0.0
-/** @var float */
-define('CWS_5BADDI_PLUGIN_VERSION', '0.4');
-define('CWS_5BADDI_PLUGIN_ASSETS_VERSION', '0.1.6'); 
+define('CWS_5BADDI_PLUGIN_VERSION', '0.4.1');
+define('CWS_5BADDI_PLUGIN_ASSETS_VERSION', '0.1.7'); 
 
 if (defined('WP_DEBUG') && WP_DEBUG) {
     opcache_reset();
